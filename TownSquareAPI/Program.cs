@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TownSquareAPI.Data;
+using TownSquareAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<PostService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
