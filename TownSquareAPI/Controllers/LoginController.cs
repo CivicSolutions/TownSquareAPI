@@ -1,33 +1,37 @@
 using Microsoft.AspNetCore.Mvc;
+using TownSquareAPI.Data;
+
 
 namespace TownSquareAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class LoginController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private readonly ApplicationDbContext _dbContext;
 
-        private readonly ILogger<LoginController> _logger;
-
-        public LoginController(ILogger<LoginController> logger)
+        public LoginController(ApplicationDbContext dbContext)
         {
-            _logger = logger;
+            _dbContext = dbContext;
         }
 
-        [HttpGet(Name = "GetLogin")]
-        public IEnumerable<Login> Get()
+        [HttpPost("Login")]
+        public IActionResult Login([FromBody] UserLoginRequest request)
         {
-            return Enumerable.Range(1, 5).Select(index => new Login
+            var user = _dbContext.Users.FirstOrDefault(u => u.Username == request.Username);
+
+            if (user == null || user.Password != request.Password)
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+                return Unauthorized("Ungültige Anmeldedaten.");
+            }
+
+            return Ok("Login erfolgreich!");
         }
+    }
+
+    public class UserLoginRequest
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }
