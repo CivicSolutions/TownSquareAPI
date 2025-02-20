@@ -25,19 +25,11 @@ Features
 
 -   🗑️ **Delete Profile**
 
-### In Progress:
+### Known Issues🐛:
 
--   ✅ Apply to create a local Community
+-   ✅ ~~Can't create membership requests.~~
+-   ❌ Deleting a User with a active membership request is not possible.
 
--   ✅ Apply to join a local Community
-
-### App Settings:
-
--   🌗 Light/Dark Mode
-
--   🌐 Change Language
-
--   💬 Chat in Help Posts between the Employer and the Employee
 
 Overview
 --------
@@ -279,13 +271,13 @@ POST /api/User/Register
 
     -   `200 OK`: User registered successfully
 
-#### Update User Bio
+#### Update User 
 
 ```
 PUT /api/User/UpdateBio/{userId}
 ```
 
--   **Description:** Update a user's bio.
+-   **Description:** Update a user's name and bio.
 
 -   **Parameters:**
 
@@ -303,6 +295,22 @@ PUT /api/User/UpdateBio/{userId}
 -   **Response:**
 
     -   `200 OK`: Bio updated successfully
+
+ #### Delete User 
+
+```
+DELETE /api/User/UpdateBio/{userId}
+```
+
+-   **Description:** Delete a User.
+
+-   **Parameters:**
+
+    -   `userId` (int32) -- User ID
+
+-   **Response:**
+
+    -   `200 OK`: User deleted.
 
 ## Info
 **TownSquaresAPI** is a REST-API for a mobile application called [TownSquare](https://github.com/Sergio-404/TownSquare), developed using `.NET MAUI`, currently optimized primarily for Android devices. This project was created as part of a school assignment and is still in the development phase. While significant progress has been made, several key features are still under development.
