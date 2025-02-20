@@ -21,8 +21,8 @@ namespace TownSquareAPI.Services
         {
             var request = new UserCommunityRequest
             {
-                UserId = userId,
-                CommunityId = communityId
+                user_id = userId,
+                community_id = communityId
             };
             _dbContext.Add(request);
             _dbContext.SaveChanges();

@@ -2,8 +2,7 @@
 {
     public class UserCommunityRequest
     {
-        public int Id { get; set; }
-        public int UserId { get; set; }
-        public int CommunityId { get; set; }
+        public int user_id { get; set; }
+        public int community_id { get; set; }
     }
 }

@@ -40,7 +40,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Enable Swagger UI in development mode
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

@@ -21,7 +21,7 @@ namespace TownSquareAPI.Controllers
             return Ok(communities);
         }
 
-        [HttpPost("RequestMembership")]
+        [HttpPut("RequestMembership")]
         public IActionResult RequestMembership(int userId, int communityId)
         {
             _communityService.InsertMembershipRequest(userId, communityId);

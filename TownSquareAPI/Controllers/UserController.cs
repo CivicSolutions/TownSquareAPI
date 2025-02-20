@@ -40,5 +40,12 @@ namespace TownSquareAPI.Controllers
             _userService.UpdateUser(userId, updateBioDto.NewUsername, updateBioDto.NewBio);
             return Ok("Bio updated.");
         }
+
+        [HttpDelete("DeleteUser/{userId}")]
+        public IActionResult DeleteUser(int userId)
+        {
+            _userService.DeleteUserById(userId);
+            return Ok("User deleted.");
+        }
     }
 }

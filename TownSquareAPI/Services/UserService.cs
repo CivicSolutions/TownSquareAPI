@@ -1,4 +1,5 @@
-﻿using TownSquareAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using TownSquareAPI.Data;
 using TownSquareAPI.Models;
 
 namespace TownSquareAPI.Services
@@ -33,6 +34,17 @@ namespace TownSquareAPI.Services
         {
             return _dbContext.Users.Find(userId);
         }
+        
+        public void DeleteUserById(int userId)
+        {
+            var user = _dbContext.Users.Find(userId);
+            if (user != null)
+            {
+                _dbContext.Users.Remove(user);
+                _dbContext.SaveChanges();
+            }
+        }
+
 
         public void UpdateUser(int userId, string newUsername, string newBio)
         {

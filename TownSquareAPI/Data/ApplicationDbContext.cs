@@ -24,8 +24,11 @@ namespace TownSquareAPI.Data
             modelBuilder.Entity<Post>().ToTable("posts");
             modelBuilder.Entity<Community>().ToTable("communities");
             modelBuilder.Entity<PinData>().ToTable("pins");
-            modelBuilder.Entity<UserCommunityRequest>().ToTable("user_community_requests");
+            modelBuilder.Entity<UserCommunityRequest>().ToTable("user_community_membership");
             
+            
+            modelBuilder.Entity<UserCommunityRequest>()
+                .HasKey(ucr => new { ucr.user_id, ucr.community_id });
         }
     }
 }
