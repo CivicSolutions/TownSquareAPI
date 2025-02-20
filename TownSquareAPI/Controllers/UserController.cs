@@ -20,25 +20,25 @@ namespace TownSquareAPI.Controllers
         public IActionResult Register([FromBody] User user)
         {
             _userService.CreateUser(user);
-            return Ok("Benutzer erstellt.");
+            return Ok("User created.");
         }
 
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            var user = _userService.GetUserByUsername(request.Username);
-            if (user == null || user.Password != request.Password)
+            var user = _userService.GetUserByEmailAndPassword(request.Email, request.Password);
+            if (user == null)
             {
-                return Unauthorized("Ungültige Anmeldedaten.");
+                return Unauthorized("Invalid login credentials.");
             }
-            return Ok("Erfolgreich eingeloggt.");
+            return Ok("Login successful.");
         }
 
         [HttpPut("UpdateBio/{userId}")]
-        public IActionResult UpdateBio(int userId, [FromBody] string newBio)
+        public IActionResult UpdateBio(int userId, [FromBody] UpdateBioDto updateBioDto)
         {
-            _userService.UpdateUserBio(userId, newBio);
-            return Ok("Bio aktualisiert.");
+            _userService.UpdateUser(userId, updateBioDto.NewUsername, updateBioDto.NewBio);
+            return Ok("Bio updated.");
         }
     }
 }

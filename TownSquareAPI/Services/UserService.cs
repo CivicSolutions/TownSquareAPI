@@ -12,25 +12,39 @@ namespace TownSquareAPI.Services
             _dbContext = dbContext;
         }
 
-        public User? GetUserByUsername(string username)
-        {
-            return _dbContext.Users.FirstOrDefault(u => u.Username == username);
-        }
-
         public void CreateUser(User user)
         {
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
         }
 
-        public void UpdateUserBio(int userId, string newBio)
+        public User? GetUserByEmailAndPassword(string email, string password)
+        {
+            return _dbContext.Users.FirstOrDefault(u => u.email == email && u.password == password);
+        }
+
+        public int GetUserIdByEmail(string email)
+        {
+            var user = _dbContext.Users.FirstOrDefault(u => u.email == email);
+            return user?.id ?? -1;
+        }
+
+        public User? GetUserById(int userId)
+        {
+            return _dbContext.Users.Find(userId);
+        }
+
+        public void UpdateUser(int userId, string newUsername, string newBio)
         {
             var user = _dbContext.Users.Find(userId);
             if (user != null)
             {
-                user.Bio = newBio;
+                user.name = newUsername;
+                user.bio = newBio;
                 _dbContext.SaveChanges();
             }
         }
+
+      
     }
 }

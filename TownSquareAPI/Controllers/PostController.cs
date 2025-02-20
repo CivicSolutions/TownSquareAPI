@@ -17,7 +17,7 @@ namespace TownSquareAPI.Controllers
         }
 
         [HttpGet("GetPosts/{isNews}")]
-        public IActionResult GetPosts(bool isNews)
+        public IActionResult GetPosts(int isNews)
         {
             var posts = _postService.GetPosts(isNews);
             return Ok(posts);
@@ -28,16 +28,16 @@ namespace TownSquareAPI.Controllers
         {
             var post = new Post
             {
-                Content = postDto.Content,
-                UserId = postDto.UserId,
-                IsNews = postDto.IsNews,
-                CreatedAt = DateTime.UtcNow,
-                CommunityId = postDto.CommunityId
+                content = postDto.content,
+                user_id = postDto.user_id,
+                isnews = postDto.isnews,
+                posttime = DateTime.UtcNow,
+                community_id = postDto.community_id
             };
 
             _postService.CreatePost(post);
 
-            return Ok("Beitrag erstellt.");
+            return Ok("Post created.");
         }
     }
 }

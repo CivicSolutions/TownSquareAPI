@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TownSquareAPI.Data;
 
-
 namespace TownSquareAPI.Controllers
 {
     [ApiController]
@@ -18,14 +17,14 @@ namespace TownSquareAPI.Controllers
         [HttpPost("Login")]
         public IActionResult Login([FromBody] UserLoginRequest request)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.Username == request.Username);
+            var user = _dbContext.Users.FirstOrDefault(u => u.name == request.Username);
 
-            if (user == null || user.Password != request.Password)
+            if (user == null || user.password != request.Password)
             {
-                return Unauthorized("Ungültige Anmeldedaten.");
+                return Unauthorized("Invalid login credentials.");
             }
 
-            return Ok("Login erfolgreich!");
+            return Ok(new { Message = "Login successful!", UserId = user.id });
         }
     }
 
