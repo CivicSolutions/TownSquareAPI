@@ -5,7 +5,6 @@ using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Load environment variables from .env (optional)
 Env.Load();
 
 // Build the connection string dynamically or fall back to appsettings.json
