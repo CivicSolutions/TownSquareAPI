@@ -3,6 +3,7 @@ bin/
 obj/
 
 .vs 
+*.env
 
 # Ignore user-specific files
 *.user
