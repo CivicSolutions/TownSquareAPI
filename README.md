@@ -25,9 +25,12 @@ Features
 
 -   🗑️ **Delete Profile**
 
+-   🚦 **Rate-Limiting**
+
 ### Known Issues🐛:
 
 -   ✅ ~~Can't create membership requests.~~
+-   ⏳ Do to using a free Host, Response Times are quite slow.
 -   ❌ Deleting a User with a active membership request is not possible.
 
 
@@ -46,9 +49,9 @@ TownSquareAPI provides **RESTful** endpoints for managing:
 
 -   General community posts
 
-**Base URL:** `https://townsquareapi-0-1.onrender.com/`
+**Base URL:** `https://townsquareapi.onrender.com/`
 
-**Swagger URL:** `https://townsquareapi-0-1.onrender.com/swagger/index.html`
+**Swagger URL:** `https://townsquareapi.onrender.com/swagger/index.html` *-- Temporarly broken new URL will be added soon*
 
 API Endpoints
 -------------
