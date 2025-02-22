@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TownSquareAPI.Data;
 using TownSquareAPI.Services;
 using DotNetEnv;
+using AspNetCoreRateLimit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,11 @@ builder.Services.AddScoped<CommunityService>();
 builder.Services.AddScoped<HelpPostService>();
 builder.Services.AddScoped<PinService>();
 
+builder.Services.AddMemoryCache();
+builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+builder.Services.AddInMemoryRateLimiting();
+
 // Add controllers and Swagger for API documentation
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -49,5 +55,6 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.UseIpRateLimiting();
 
 app.Run();
