@@ -51,7 +51,7 @@ TownSquareAPI provides **RESTful** endpoints for managing:
 
 **Base URL:** `https://townsquareapi.onrender.com/`
 
-**Swagger URL:** `https://townsquareapi.onrender.com/swagger/index.html` *-- Temporarly broken new URL will be added soon*
+**Swagger URL:** `https://townsquareapi0-1.onrender.com/swagger/index.html` *-- Temporarly URL, will be replaced soon*
 
 API Endpoints
 -------------
