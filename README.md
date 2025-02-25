@@ -1,7 +1,6 @@
 # TownSquare - where Community thrives
 
-[![comapplogo.png](https://i.postimg.cc/jjGXFDt8/Town-Square.png)](https://postimg.cc/xkhN7JbK)
-
+[![Town-Square.png](https://i.postimg.cc/j5NK3Dsc/Town-Square.png)](https://postimg.cc/jwsGLdnn)
 
 
 **TownSquareAPI** powers the backend of *TownSquare*, a platform designed to bring people together and foster real connections within local communities.
