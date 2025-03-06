@@ -25,5 +25,8 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
-    - name: Run tests
-      run: dotnet test --no-build --verbosity normal
+    - name: Debug Test Discovery
+      run: dotnet test TownSquareAPI.Tests/TownSquareAPI.Tests.csproj --list-tests
+
+    - name: Run Tests
+      run: dotnet test TownSquareAPI.Tests/TownSquareAPI.Tests.csproj --no-build --verbosity normal
