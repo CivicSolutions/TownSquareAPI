@@ -15,6 +15,11 @@ namespace TownSquareAPI.Services
 
         public void CreateUser(User user)
         {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
         }
@@ -57,6 +62,28 @@ namespace TownSquareAPI.Services
             }
         }
 
-      
+        public void DeleteUser(int userId)
+        {
+            var user = _dbContext.Users.Find(userId);
+            if (user != null)
+            {
+                _dbContext.Users.Remove(user);
+                _dbContext.SaveChanges();
+            }
+            else
+            {
+                throw new ArgumentException("User not found");
+            }
+        }
+
+        public List<User> GetAllUsers()
+        {
+            return _dbContext.Users.ToList();
+        }
+
+        public User? GetUserByEmail(string email)
+        {
+            return _dbContext.Users.FirstOrDefault(u => u.email == email);
+        }
     }
 }
