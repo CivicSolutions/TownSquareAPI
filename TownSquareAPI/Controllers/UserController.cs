@@ -45,11 +45,11 @@ namespace TownSquareAPI.Controllers
             return Ok(user);
         }
 
-        [HttpPut("UpdateBio/{userId}")]
-        public IActionResult UpdateBio(int userId, [FromBody] UpdateBioDto updateBioDto)
+        [HttpPut("UpdateDescription/{userId}")]
+        public IActionResult UpdateDescription(int userId, [FromBody] UpdateDescriptionDto updateDescriptionDto)
         {
-            _userService.UpdateUser(userId, updateBioDto.NewUsername, updateBioDto.NewBio);
-            return Ok("Bio updated.");
+            _userService.UpdateUser(userId, updateDescriptionDto.NewUsername, updateDescriptionDto.NewDescription);
+            return Ok("Description updated.");
         }
 
         [HttpDelete("DeleteUser/{userId}")]

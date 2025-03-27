@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TownSquareAPI.Data;
+﻿using TownSquareAPI.Data;
 using TownSquareAPI.Models;
 
 namespace TownSquareAPI.Services
@@ -20,54 +19,54 @@ namespace TownSquareAPI.Services
                 throw new ArgumentNullException(nameof(user));
             }
 
-            _dbContext.Users.Add(user);
+            _dbContext.User.Add(user);
             _dbContext.SaveChanges();
         }
 
         public User? GetUserById(int userId)
         {
-            return _dbContext.Users.FirstOrDefault(u => u.id == userId);
+            return _dbContext.User.FirstOrDefault(u => u.Id == userId);
         }
 
         public User? GetUserByEmailAndPassword(string email, string password)
         {
-            return _dbContext.Users.FirstOrDefault(u => u.email == email && u.password == password);
+            return _dbContext.User.FirstOrDefault(u => u.Email == email && u.Password == password);
         }
 
         public int GetUserIdByEmail(string email)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.email == email);
-            return user?.id ?? -1;
+            var user = _dbContext.User.FirstOrDefault(u => u.Email == email);
+            return user?.Id ?? -1;
         }
 
         public void DeleteUserById(int userId)
         {
-            var user = _dbContext.Users.Find(userId);
+            var user = _dbContext.User.Find(userId);
             if (user != null)
             {
-                _dbContext.Users.Remove(user);
+                _dbContext.User.Remove(user);
                 _dbContext.SaveChanges();
             }
         }
 
 
-        public void UpdateUser(int userId, string newUsername, string newBio)
+        public void UpdateUser(int userId, string newUsername, string newDescription)
         {
-            var user = _dbContext.Users.Find(userId);
+            var user = _dbContext.User.Find(userId);
             if (user != null)
             {
-                user.name = newUsername;
-                user.bio = newBio;
+                user.Name = newUsername;
+                user.Description = newDescription;
                 _dbContext.SaveChanges();
             }
         }
 
         public void DeleteUser(int userId)
         {
-            var user = _dbContext.Users.Find(userId);
+            var user = _dbContext.User.Find(userId);
             if (user != null)
             {
-                _dbContext.Users.Remove(user);
+                _dbContext.User.Remove(user);
                 _dbContext.SaveChanges();
             }
             else
@@ -78,12 +77,12 @@ namespace TownSquareAPI.Services
 
         public List<User> GetAllUsers()
         {
-            return _dbContext.Users.ToList();
+            return _dbContext.User.ToList();
         }
 
         public User? GetUserByEmail(string email)
         {
-            return _dbContext.Users.FirstOrDefault(u => u.email == email);
+            return _dbContext.User.FirstOrDefault(u => u.Email == email);
         }
     }
 }

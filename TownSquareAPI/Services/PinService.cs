@@ -12,14 +12,14 @@ namespace TownSquareAPI.Services
             _dbContext = dbContext;
         }
 
-        public List<PinData> GetPins()
+        public List<Pin> GetPins()
         {
-            return _dbContext.Pins.ToList();
+            return _dbContext.Pin.ToList();
         }
 
-        public void InsertPin(PinData pin)
+        public void InsertPin(Pin pin)
         {
-            _dbContext.Pins.Add(pin);
+            _dbContext.Pin.Add(pin);
             _dbContext.SaveChanges();
         }
     }

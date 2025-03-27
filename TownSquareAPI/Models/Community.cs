@@ -2,10 +2,10 @@
 {
     public class Community
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string location { get; set; }
-        public bool isLicensed { get; set; }
-        public string description { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Location { get; set; }
+        public bool IsLicensed { get; set; }
+        public string Description { get; set; }
     }
 }
