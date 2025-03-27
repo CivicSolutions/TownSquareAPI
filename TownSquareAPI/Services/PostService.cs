@@ -14,12 +14,12 @@ namespace TownSquareAPI.Services
 
         public IEnumerable<Post> GetPosts(int isNews)
         {
-            return _dbContext.Set<Post>().Where(p => p.isnews == isNews).ToList();
+            return _dbContext.Set<Post>().Where(p => p.IsNews == isNews).ToList();
         }
 
         public void CreatePost(Post post)
         {
-            _dbContext.Posts.Add(post);
+            _dbContext.Post.Add(post);
             _dbContext.SaveChanges();
         }
     }

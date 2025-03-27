@@ -23,7 +23,7 @@ namespace TownSquareAPI.Controllers
         }
 
         [HttpPost("InsertPin")]
-        public IActionResult InsertPin([FromBody] PinData pin)
+        public IActionResult InsertPin([FromBody] Pin pin)
         {
             _pinService.InsertPin(pin);
             return Ok("Pin inserted.");

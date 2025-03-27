@@ -14,12 +14,12 @@ namespace TownSquareAPI.Services
 
         public List<HelpPost> GetHelpPosts()
         {
-            return _dbContext.HelpPosts.ToList();
+            return _dbContext.HelpPost.ToList();
         }
 
         public void AddHelpPost(HelpPost helpPost)
         {
-            _dbContext.HelpPosts.Add(helpPost);
+            _dbContext.HelpPost.Add(helpPost);
             _dbContext.SaveChanges();
         }
     }

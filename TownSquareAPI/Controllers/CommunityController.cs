@@ -47,7 +47,7 @@ namespace TownSquareAPI.Controllers
             }
 
             var community = _communityService.CreateCommunity(request.name, request.description, request.location, request.isLicensed);
-            return CreatedAtAction(nameof(GetById), new { id = community.id }, community);
+            return CreatedAtAction(nameof(GetById), new { id = community.Id }, community);
         }
 
         [HttpPut("Update/{communityId}")]
