@@ -1,6 +1,6 @@
 # TownSquare - where Community thrives
 
-[![Town-Square.png](https://i.postimg.cc/j5NK3Dsc/Town-Square.png)](https://postimg.cc/jwsGLdnn)
+![TownSquare Logo](https://i.imgur.com/GpPYafA.png)
 
 
 **TownSquareAPI** powers the backend of *TownSquare*, a platform designed to bring people together and foster real connections within local communities.
@@ -48,9 +48,9 @@ TownSquareAPI provides **RESTful** endpoints for managing:
 
 -   General community posts
 
-**Base URL:** `https://townsquareapi.onrender.com/`
+**Base URL:** https://townsquareapi.onrender.com/
 
-**Swagger URL:** `https://townsquareapi0-1.onrender.com/swagger/index.html` *-- Temporarly URL, will be replaced soon*
+**Swagger URL:** https://townsquareapi0-1.onrender.com/swagger/index.html *-- Temporarly URL, will be replaced soon*
 
 API Endpoints
 -------------
@@ -317,7 +317,7 @@ DELETE /api/User/UpdateBio/{userId}
     -   `200 OK`: User deleted.
 
 ## Info
-**TownSquaresAPI** is a REST-API for a mobile application called [TownSquare](https://github.com/Sergio-404/TownSquare), developed using `.NET MAUI`, currently optimized primarily for Android devices. This project was created as part of a school assignment and is still in the development phase. While significant progress has been made, several key features are still under development.
+**TownSquaresAPI** is a REST-API for a mobile application called [TownSquare](https://github.com/CivicSolutions/TownSquare), developed using `.NET MAUI`, currently optimized primarily for Android devices. This project was created as part of a school assignment and is still in the development phase. While significant progress has been made, several key features are still under development.
 ## Authors
 
 - [Sergio Soares](https://www.github.com/Sergio-404)
