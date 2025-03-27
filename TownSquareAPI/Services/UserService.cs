@@ -24,6 +24,11 @@ namespace TownSquareAPI.Services
             _dbContext.SaveChanges();
         }
 
+        public User? GetUserById(int userId)
+        {
+            return _dbContext.Users.FirstOrDefault(u => u.id == userId);
+        }
+
         public User? GetUserByEmailAndPassword(string email, string password)
         {
             return _dbContext.Users.FirstOrDefault(u => u.email == email && u.password == password);
@@ -35,11 +40,6 @@ namespace TownSquareAPI.Services
             return user?.id ?? -1;
         }
 
-        public User? GetUserById(int userId)
-        {
-            return _dbContext.Users.Find(userId);
-        }
-        
         public void DeleteUserById(int userId)
         {
             var user = _dbContext.Users.Find(userId);

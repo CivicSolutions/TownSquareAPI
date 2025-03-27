@@ -1,11 +1,10 @@
-﻿namespace TownSquareAPI.Models
+﻿namespace TownSquareAPI.DTOs
 {
-    public class Community
+    public class CreateCommunityRequest
     {
-        public int id { get; set; }
         public string name { get; set; }
+        public string description { get; set; }
         public string location { get; set; }
         public bool isLicensed { get; set; }
-        public string description { get; set; }
     }
 }
