@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TownSquareAPI.Data;
-using TownSquareAPI.DTOs.Community;
 using TownSquareAPI.Models;
 
 namespace TownSquareAPI.Services

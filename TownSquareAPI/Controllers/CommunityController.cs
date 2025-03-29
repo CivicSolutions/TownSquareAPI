@@ -94,7 +94,7 @@ namespace TownSquareAPI.Controllers
                 return NotFound($"Community with ID {communityId} not found.");
             }
 
-            return Ok($"Community with ID {communityId} has been deleted.");
+            return NoContent();
         }
 
         [HttpPut("RequestMembership")]
