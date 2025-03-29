@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using TownSquareAPI.DTOs.Community;
+using TownSquareAPI.Models;
 
 namespace TownSquareAPI
 {
@@ -6,7 +8,11 @@ namespace TownSquareAPI
     {
         public MappingProfile()
         {
+            // Community
 
+            CreateMap<CommunityRequestDTO, Community>();
+
+            CreateMap<Community, CommunityResponseDTO>();
         }
     }
 }

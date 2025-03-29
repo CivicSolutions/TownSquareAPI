@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TownSquareAPI.DTOs;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using TownSquareAPI.DTOs.Community;
+using TownSquareAPI.Models;
 using TownSquareAPI.Services;
 
 namespace TownSquareAPI.Controllers
@@ -9,64 +11,83 @@ namespace TownSquareAPI.Controllers
     public class CommunityController : ControllerBase
     {
         private readonly CommunityService _communityService;
+        private readonly IMapper _mapper;
 
-        public CommunityController(CommunityService communityService)
+        public CommunityController(CommunityService communityService, IMapper mapper)
         {
             _communityService = communityService;
+            _mapper = mapper;
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var communities = _communityService.GetAllCommunities();
-            return Ok(communities);
+            List<Community> communities = await _communityService.GetAll(cancellationToken);
+            List<CommunityResponseDTO> communityDTOs = _mapper.Map<List<CommunityResponseDTO>>(communities); // kind of useless when the mapping is 1:1 but it's good practice
+            return Ok(communityDTOs);
         }
+
         [HttpGet("GetByName")]
-        public IActionResult GetByName(string name)
+        public async Task<IActionResult> GetByName(string name, CancellationToken cancellationToken)
         {
-            var community = _communityService.GetByName(name);
-            return Ok(community);
+            Community? community = await _communityService.GetByName(name, cancellationToken);
+
+            if (community == null)
+            {
+                return NotFound($"Community with name {name} not found.");
+            }
+
+            CommunityResponseDTO communityDTO = _mapper.Map<CommunityResponseDTO>(community);
+            return Ok(communityDTO);
         }
+
         [HttpGet("GetById/{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
         {
-            var community = _communityService.GetById(id);
+            Community? community = await _communityService.GetById(id, cancellationToken);
+
             if (community == null)
             {
                 return NotFound($"Community with ID {id} not found.");
             }
-            return Ok(community);
+
+            CommunityResponseDTO communityDTO = _mapper.Map<CommunityResponseDTO>(community);
+            return Ok(communityDTO);
         }
 
         [HttpPost("Create")]
-        public IActionResult Create([FromBody] CreateCommunityRequest request)
+        public async Task<IActionResult> Create([FromBody] CommunityRequestDTO request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(request.name) || string.IsNullOrWhiteSpace(request.location))
+            if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.Location))
             {
                 return BadRequest("Name and location are required.");
             }
 
-            var community = _communityService.CreateCommunity(request.name, request.description, request.location, request.isLicensed);
-            return CreatedAtAction(nameof(GetById), new { id = community.Id }, community);
+            Community community = _mapper.Map<Community>(request);
+            Community createdCommunity = await _communityService.Create(community, cancellationToken);
+            CommunityResponseDTO communityDto = _mapper.Map<CommunityResponseDTO>(createdCommunity);
+            return CreatedAtAction(nameof(GetById), new { id = communityDto.Id }, communityDto);
         }
 
         [HttpPut("Update/{communityId}")]
-        public IActionResult UpdateCommunity(int communityId, [FromBody] UpdateCommunityRequest request)
+        public async Task<IActionResult> Update(int communityId, [FromBody] CommunityRequestDTO request, CancellationToken cancellationToken)
         {
-            var updatedCommunity = _communityService.UpdateCommunity(communityId, request.name, request.location, request.description);
+            Community community = _mapper.Map<Community>(request);
+            Community? updatedCommunity = await _communityService.Update(communityId, community, cancellationToken);
 
             if (updatedCommunity == null)
             {
                 return NotFound($"Community with ID {communityId} not found.");
             }
 
-            return Ok(updatedCommunity);
+            CommunityResponseDTO communityDto = _mapper.Map<CommunityResponseDTO>(updatedCommunity);
+            return CreatedAtAction(nameof(GetById), new { id = communityDto.Id }, communityDto); // thoughts on using CreatedAtAction instead of Ok here?
         }
 
         [HttpDelete("Delete/{communityId}")]
-        public IActionResult DeleteCommunity(int communityId)
+        public async Task<IActionResult> DeleteCommunity(int communityId, CancellationToken cancellationToken)
         {
-            bool isDeleted = _communityService.DeleteCommunity(communityId);
+            bool isDeleted = await _communityService.Delete(communityId, cancellationToken);
 
             if (!isDeleted)
             {
@@ -76,11 +97,10 @@ namespace TownSquareAPI.Controllers
             return Ok($"Community with ID {communityId} has been deleted.");
         }
 
-
         [HttpPut("RequestMembership")]
-        public IActionResult RequestMembership(int userId, int communityId)
+        public async Task<IActionResult> RequestMembership(int userId, int communityId, CancellationToken cancellationToken)
         {
-            _communityService.InsertMembershipRequest(userId, communityId);
+            await _communityService.CreateMembershipRequest(userId, communityId, cancellationToken);
             return Ok("Membership request submitted.");
         }
     }

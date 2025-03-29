@@ -1,4 +1,6 @@
-﻿using TownSquareAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using TownSquareAPI.Data;
+using TownSquareAPI.DTOs.Community;
 using TownSquareAPI.Models;
 
 namespace TownSquareAPI.Services
@@ -12,36 +14,30 @@ namespace TownSquareAPI.Services
             _dbContext = dbContext;
         }
 
-        public List<Community> GetAllCommunities()
+        public async Task<List<Community>> GetAll(CancellationToken cancellationToken)
         {
-            return _dbContext.Community.ToList();
+            return await _dbContext.Community.ToListAsync(cancellationToken);
         }
 
-        public Community? GetById(int id)
+        public async Task<Community?> GetById(int id, CancellationToken cancellationToken)
         {
-            return _dbContext.Community.FirstOrDefault(c => c.Id == id);
+            return await _dbContext.Community.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
         }
-        public Community? GetByName(string name)
-        {
-            return _dbContext.Community.FirstOrDefault(c => c.Name == name);
-        }
-        public Community CreateCommunity(string name, string description, string location, bool isLicensed)
-        {
-            var community = new Community
-            {
-                Name = name,
-                Description = description,
-                Location = location,
-                IsLicensed = isLicensed
-            };
 
+        public async Task<Community?> GetByName(string name, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Community.FirstOrDefaultAsync(c => c.Name == name, cancellationToken);
+        }
+
+        public async Task<Community> Create(Community community, CancellationToken cancellationToken)
+        {
             _dbContext.Community.Add(community);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return community;
         }
 
-        public void InsertMembershipRequest(int userId, int communityId)
+        public async Task CreateMembershipRequest(int userId, int communityId, CancellationToken cancellationToken)
         {
             var request = new UserCommunityRequest
             {
@@ -49,27 +45,26 @@ namespace TownSquareAPI.Services
                 CommunityId = communityId
             };
             _dbContext.Add(request);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
-        public Community? UpdateCommunity(int communityId, string name, string location, string description)
-        {
-            var community = _dbContext.Community.FirstOrDefault(c => c.Id == communityId);
 
-            if (community == null)
+        public async Task<Community?> Update(int communityId, Community community, CancellationToken cancellationToken)
+        {
+            Community? communityToUpdate = await _dbContext.Community.FirstOrDefaultAsync(c => c.Id == communityId, cancellationToken);
+
+            if (communityToUpdate == null)
             {
                 return null;
             }
 
-            community.Name = name;
-            community.Location = location;
-            community.Description = description;
-
-            _dbContext.SaveChanges();
+            _dbContext.Community.Update(community);
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return community;
         }
-        public bool DeleteCommunity(int communityId)
+
+        public async Task<bool> Delete(int communityId, CancellationToken cancellationToken)
         {
-            var community = _dbContext.Community.FirstOrDefault(c => c.Id == communityId);
+            var community = await _dbContext.Community.FirstOrDefaultAsync(c => c.Id == communityId, cancellationToken);
 
             if (community == null)
             {
@@ -77,13 +72,9 @@ namespace TownSquareAPI.Services
             }
 
             _dbContext.Community.Remove(community);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return true;
-        }
-        internal object CreateCommunity(string name, string description, string location, string isLicensed)
-        {
-            throw new NotImplementedException();
         }
     }
 }
