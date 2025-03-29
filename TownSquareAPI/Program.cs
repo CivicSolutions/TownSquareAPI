@@ -36,6 +36,9 @@ builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection(
 builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 builder.Services.AddInMemoryRateLimiting();
 
+// Add AutoMapper
+builder.Services.AddAutoMapper(typeof(Program));
+
 // Add controllers and Swagger for API documentation
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
