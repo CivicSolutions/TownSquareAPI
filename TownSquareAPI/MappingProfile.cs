@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using TownSquareAPI.DTOs.Community;
+using TownSquareAPI.DTOs.Pin;
 using TownSquareAPI.Models;
 
 namespace TownSquareAPI
@@ -13,6 +14,12 @@ namespace TownSquareAPI
             CreateMap<CommunityRequestDTO, Community>();
 
             CreateMap<Community, CommunityResponseDTO>();
+
+            // Pin
+
+            CreateMap<PinRequestDTO, Pin>();
+
+            CreateMap<Pin, PinResponseDTO>();
         }
     }
 }
