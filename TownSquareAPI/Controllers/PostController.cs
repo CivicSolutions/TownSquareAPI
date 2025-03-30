@@ -3,41 +3,40 @@ using TownSquareAPI.DTOs;
 using TownSquareAPI.Models;
 using TownSquareAPI.Services;
 
-namespace TownSquareAPI.Controllers
+namespace TownSquareAPI.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class PostController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class PostController : ControllerBase
+    private readonly PostService _postService;
+
+    public PostController(PostService postService)
     {
-        private readonly PostService _postService;
+        _postService = postService;
+    }
 
-        public PostController(PostService postService)
+    [HttpGet("GetPosts/{isNews}")]
+    public IActionResult GetPosts(int isNews)
+    {
+        var posts = _postService.GetPosts(isNews);
+        return Ok(posts);
+    }
+
+    [HttpPost("CreatePost")]
+    public IActionResult CreatePost([FromBody] CreatePostDto postDto)
+    {
+        var post = new Post
         {
-            _postService = postService;
-        }
+            Content = postDto.content,
+            UserId = postDto.user_id,
+            IsNews = postDto.isnews,
+            PostedAt = DateTime.UtcNow,
+            CommunityId = postDto.community_id
+        };
 
-        [HttpGet("GetPosts/{isNews}")]
-        public IActionResult GetPosts(int isNews)
-        {
-            var posts = _postService.GetPosts(isNews);
-            return Ok(posts);
-        }
+        _postService.CreatePost(post);
 
-        [HttpPost("CreatePost")]
-        public IActionResult CreatePost([FromBody] CreatePostDto postDto)
-        {
-            var post = new Post
-            {
-                Content = postDto.content,
-                UserId = postDto.user_id,
-                IsNews = postDto.isnews,
-                PostedAt = DateTime.UtcNow,
-                CommunityId = postDto.community_id
-            };
-
-            _postService.CreatePost(post);
-
-            return Ok("Post created.");
-        }
+        return Ok("Post created.");
     }
 }

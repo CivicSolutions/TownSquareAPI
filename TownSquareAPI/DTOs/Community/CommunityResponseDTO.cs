@@ -1,11 +1,10 @@
-﻿namespace TownSquareAPI.DTOs.Community
+﻿namespace TownSquareAPI.DTOs.Community;
+
+public class CommunityResponseDTO
 {
-    public class CommunityResponseDTO
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Location { get; set; }
-        public bool IsLicensed { get; set; }
-        public string Description { get; set; }
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Location { get; set; }
+    public bool IsLicensed { get; set; }
+    public string Description { get; set; }
 }

@@ -1,26 +1,25 @@
 ﻿using TownSquareAPI.Data;
 using TownSquareAPI.Models;
 
-namespace TownSquareAPI.Services
+namespace TownSquareAPI.Services;
+
+public class PostService
 {
-    public class PostService
+    private readonly ApplicationDbContext _dbContext;
+
+    public PostService(ApplicationDbContext dbContext)
     {
-        private readonly ApplicationDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public PostService(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+    public IEnumerable<Post> GetPosts(int isNews)
+    {
+        return _dbContext.Set<Post>().Where(p => p.IsNews == isNews).ToList();
+    }
 
-        public IEnumerable<Post> GetPosts(int isNews)
-        {
-            return _dbContext.Set<Post>().Where(p => p.IsNews == isNews).ToList();
-        }
-
-        public void CreatePost(Post post)
-        {
-            _dbContext.Post.Add(post);
-            _dbContext.SaveChanges();
-        }
+    public void CreatePost(Post post)
+    {
+        _dbContext.Post.Add(post);
+        _dbContext.SaveChanges();
     }
 }
