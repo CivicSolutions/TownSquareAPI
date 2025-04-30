@@ -1,9 +1,7 @@
 using AspNetCoreRateLimit;
 using DotNetEnv;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TownSquareAPI.Data;
-using TownSquareAPI.Models;
 using TownSquareAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,11 +23,6 @@ if (string.IsNullOrEmpty(connectionString) || builder.Environment.IsDevelopment(
 // Register DbContext with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
-
-// Add Identity services
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
 
 // Register application services
 builder.Services.AddScoped<UserService>();
@@ -61,7 +54,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.UseIpRateLimiting();

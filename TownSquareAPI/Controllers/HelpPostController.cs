@@ -2,30 +2,31 @@
 using TownSquareAPI.Models;
 using TownSquareAPI.Services;
 
-namespace TownSquareAPI.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class HelpPostController : ControllerBase
+namespace TownSquareAPI.Controllers
 {
-    private readonly HelpPostService _helpPostService;
-
-    public HelpPostController(HelpPostService helpPostService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class HelpPostController : ControllerBase
     {
-        _helpPostService = helpPostService;
-    }
+        private readonly HelpPostService _helpPostService;
 
-    [HttpGet("GetHelpPosts")]
-    public IActionResult GetHelpPosts()
-    {
-        var helpPosts = _helpPostService.GetHelpPosts();
-        return Ok(helpPosts);
-    }
+        public HelpPostController(HelpPostService helpPostService)
+        {
+            _helpPostService = helpPostService;
+        }
 
-    [HttpPost("AddHelpPost")]
-    public IActionResult AddHelpPost([FromBody] HelpPost helpPost)
-    {
-        _helpPostService.AddHelpPost(helpPost);
-        return Ok("Help post added.");
+        [HttpGet("GetHelpPosts")]
+        public IActionResult GetHelpPosts()
+        {
+            var helpPosts = _helpPostService.GetHelpPosts();
+            return Ok(helpPosts);
+        }
+
+        [HttpPost("AddHelpPost")]
+        public IActionResult AddHelpPost([FromBody] HelpPost helpPost)
+        {
+            _helpPostService.AddHelpPost(helpPost);
+            return Ok("Help post added.");
+        }
     }
 }

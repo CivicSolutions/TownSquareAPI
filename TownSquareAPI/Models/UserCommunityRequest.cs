@@ -1,7 +1,8 @@
-﻿namespace TownSquareAPI.Models;
-
-public class UserCommunityRequest
+﻿namespace TownSquareAPI.Models
 {
-    public int UserId { get; set; }
-    public int CommunityId { get; set; }
+    public class UserCommunityRequest
+    {
+        public int UserId { get; set; }
+        public int CommunityId { get; set; }
+    }
 }

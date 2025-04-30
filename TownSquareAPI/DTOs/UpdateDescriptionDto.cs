@@ -1,7 +1,8 @@
-﻿namespace TownSquareAPI.DTOs;
-
-public class UpdateDescriptionDto
+﻿namespace TownSquareAPI.DTOs
 {
-    public string NewUsername { get; set; }
-    public string NewDescription { get; set; }
+    public class UpdateDescriptionDto
+    {
+        public string NewUsername { get; set; }
+        public string NewDescription { get; set; }
+    }
 }

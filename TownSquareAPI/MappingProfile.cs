@@ -3,22 +3,23 @@ using TownSquareAPI.DTOs.Community;
 using TownSquareAPI.DTOs.Pin;
 using TownSquareAPI.Models;
 
-namespace TownSquareAPI;
-
-public class MappingProfile : Profile
+namespace TownSquareAPI
 {
-    public MappingProfile()
+    public class MappingProfile : Profile
     {
-        // Community
+        public MappingProfile()
+        {
+            // Community
 
-        CreateMap<CommunityRequestDTO, Community>();
+            CreateMap<CommunityRequestDTO, Community>();
 
-        CreateMap<Community, CommunityResponseDTO>();
+            CreateMap<Community, CommunityResponseDTO>();
 
-        // Pin
+            // Pin
 
-        CreateMap<PinRequestDTO, Pin>();
+            CreateMap<PinRequestDTO, Pin>();
 
-        CreateMap<Pin, PinResponseDTO>();
+            CreateMap<Pin, PinResponseDTO>();
+        }
     }
 }

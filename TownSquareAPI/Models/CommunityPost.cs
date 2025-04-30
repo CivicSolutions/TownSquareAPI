@@ -1,7 +1,8 @@
-﻿namespace TownSquareAPI.Models;
-
-public class CommunityPost
+﻿namespace TownSquareAPI.Models
 {
-    public int CommunityId { get; set; }
-    public int PostId { get; set; }
+    public class CommunityPost
+    {
+        public int CommunityId { get; set; }
+        public int PostId { get; set; }
+    }
 }
