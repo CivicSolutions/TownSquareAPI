@@ -48,7 +48,9 @@ TownSquareAPI provides **RESTful** endpoints for managing:
 
 -   General community posts
 
-**Base URL:** https://townsquareapi.onrender.com/
+**Base Production URL:** https://townsquareapi.onrender.com/
+
+**Base Development URL:** https://townsquareapi-dev.onrender.com/
 
 **Swagger URL:** https://townsquareapi0-1.onrender.com/swagger/index.html *-- Temporarly URL, will be replaced soon*
 
