@@ -9,15 +9,16 @@ var builder = WebApplication.CreateBuilder(args);
 Env.Load();
 
 // add appsettings, dev appsettings, env variables (set config)
-builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .AddJsonFile($"appsettings.Development.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables();
+//builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+//    .AddJsonFile($"appsettings.Development.json", optional: true, reloadOnChange: true)
+//    .AddEnvironmentVariables();
 
-//var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION") ??
-//                       $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
-//                       $"Database={Environment.GetEnvironmentVariable("DB_DATABASE")};" +
-//                       $"Name={Environment.GetEnvironmentVariable("DB_USERNAME")};" +
-//                       $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};";
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION") ??
+                       $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
+                       $"Database={Environment.GetEnvironmentVariable("DB_DATABASE")};" +
+                       $"Username={Environment.GetEnvironmentVariable("DB_USERNAME")};" +
+                       $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};" +
+                       "SSL Mode=Require;Trust Server Certificate=true";
 
 //if (string.IsNullOrEmpty(connectionString) || builder.Environment.IsDevelopment())
 //{
@@ -27,8 +28,7 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnCh
 
 // Register DbContext with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection") ??
-                      throw new InvalidOperationException("Database connection string is not configured.")));
+    options.UseNpgsql(connectionString));
 
 // Register application services
 builder.Services.AddScoped<UserService>();
