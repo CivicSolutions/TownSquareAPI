@@ -1,6 +1,6 @@
-﻿namespace TownSquareAPI.Models;
+﻿namespace TownSquareAPI.DTOs.Post;
 
-public class Post
+public class PostResponseDTO
 {
     public int Id { get; set; }
     public string Content { get; set; }

@@ -1,6 +1,6 @@
-﻿namespace TownSquareAPI.Models;
+﻿namespace TownSquareAPI.DTOs.Community;
 
-public class Community
+public class CommunityResponseDTO
 {
     public int Id { get; set; }
     public string Name { get; set; }
