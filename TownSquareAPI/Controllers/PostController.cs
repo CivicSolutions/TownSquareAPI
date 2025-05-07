@@ -3,8 +3,8 @@ using TownSquareAPI.DTOs;
 using TownSquareAPI.Models;
 using TownSquareAPI.Services;
 
-namespace TownSquareAPI.Controllers
-{
+namespace TownSquareAPI.Controllers;
+
     [ApiController]
     [Route("api/[controller]")]
     public class PostController : ControllerBase
@@ -40,4 +40,3 @@ namespace TownSquareAPI.Controllers
             return Ok("Post created.");
         }
     }
-}

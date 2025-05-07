@@ -1,8 +1,8 @@
 ﻿using TownSquareAPI.Data;
 using TownSquareAPI.Models;
 
-namespace TownSquareAPI.Services
-{
+namespace TownSquareAPI.Services;
+
     public class PostService
     {
         private readonly ApplicationDbContext _dbContext;
@@ -23,4 +23,3 @@ namespace TownSquareAPI.Services
             _dbContext.SaveChanges();
         }
     }
-}

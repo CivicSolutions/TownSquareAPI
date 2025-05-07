@@ -2,78 +2,77 @@
 using TownSquareAPI.Data;
 using TownSquareAPI.Models;
 
-namespace TownSquareAPI.Services
+namespace TownSquareAPI.Services;
+
+public class CommunityService
 {
-    public class CommunityService
+    private readonly ApplicationDbContext _dbContext;
+
+    public CommunityService(ApplicationDbContext dbContext)
     {
-        private readonly ApplicationDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public CommunityService(ApplicationDbContext dbContext)
+    public async Task<List<Community>> GetAll(CancellationToken cancellationToken)
+    {
+        return await _dbContext.Community.ToListAsync(cancellationToken);
+    }
+
+    public async Task<Community?> GetById(int id, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Community.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+    }
+
+    public async Task<Community?> GetByName(string name, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Community.FirstOrDefaultAsync(c => c.Name == name, cancellationToken);
+    }
+
+    public async Task<Community> Create(Community community, CancellationToken cancellationToken)
+    {
+        _dbContext.Community.Add(community);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return community;
+    }
+
+    public async Task CreateMembershipRequest(int userId, int communityId, CancellationToken cancellationToken)
+    {
+        var request = new UserCommunityRequest
         {
-            _dbContext = dbContext;
+            UserId = userId,
+            CommunityId = communityId
+        };
+        _dbContext.Add(request);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<Community?> Update(int communityId, Community community, CancellationToken cancellationToken)
+    {
+        Community? communityToUpdate = await _dbContext.Community.FirstOrDefaultAsync(c => c.Id == communityId, cancellationToken);
+
+        if (communityToUpdate == null)
+        {
+            return null;
         }
 
-        public async Task<List<Community>> GetAll(CancellationToken cancellationToken)
+        _dbContext.Community.Update(community);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return community;
+    }
+
+    public async Task<bool> Delete(int communityId, CancellationToken cancellationToken)
+    {
+        var community = await _dbContext.Community.FirstOrDefaultAsync(c => c.Id == communityId, cancellationToken);
+
+        if (community == null)
         {
-            return await _dbContext.Community.ToListAsync(cancellationToken);
+            return false;
         }
 
-        public async Task<Community?> GetById(int id, CancellationToken cancellationToken)
-        {
-            return await _dbContext.Community.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
-        }
+        _dbContext.Community.Remove(community);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
-        public async Task<Community?> GetByName(string name, CancellationToken cancellationToken)
-        {
-            return await _dbContext.Community.FirstOrDefaultAsync(c => c.Name == name, cancellationToken);
-        }
-
-        public async Task<Community> Create(Community community, CancellationToken cancellationToken)
-        {
-            _dbContext.Community.Add(community);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
-            return community;
-        }
-
-        public async Task CreateMembershipRequest(int userId, int communityId, CancellationToken cancellationToken)
-        {
-            var request = new UserCommunityRequest
-            {
-                UserId = userId,
-                CommunityId = communityId
-            };
-            _dbContext.Add(request);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-        }
-
-        public async Task<Community?> Update(int communityId, Community community, CancellationToken cancellationToken)
-        {
-            Community? communityToUpdate = await _dbContext.Community.FirstOrDefaultAsync(c => c.Id == communityId, cancellationToken);
-
-            if (communityToUpdate == null)
-            {
-                return null;
-            }
-
-            _dbContext.Community.Update(community);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            return community;
-        }
-
-        public async Task<bool> Delete(int communityId, CancellationToken cancellationToken)
-        {
-            var community = await _dbContext.Community.FirstOrDefaultAsync(c => c.Id == communityId, cancellationToken);
-
-            if (community == null)
-            {
-                return false;
-            }
-
-            _dbContext.Community.Remove(community);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
-            return true;
-        }
+        return true;
     }
 }

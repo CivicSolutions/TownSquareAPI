@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TownSquareAPI.Models;
 
-namespace TownSquareAPI.Data
-{
+namespace TownSquareAPI.Data;
+
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -116,4 +116,3 @@ namespace TownSquareAPI.Data
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
-}

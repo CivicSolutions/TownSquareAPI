@@ -2,8 +2,8 @@
 using TownSquareAPI.Data;
 using TownSquareAPI.Models;
 
-namespace TownSquareAPI.Services
-{
+namespace TownSquareAPI.Services;
+
     public class PinService
     {
         private readonly ApplicationDbContext _dbContext;
@@ -58,4 +58,3 @@ namespace TownSquareAPI.Services
             return true;
         }
     }
-}

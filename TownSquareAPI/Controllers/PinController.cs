@@ -5,8 +5,8 @@ using TownSquareAPI.DTOs.Pin;
 using TownSquareAPI.Models;
 using TownSquareAPI.Services;
 
-namespace TownSquareAPI.Controllers
-{
+namespace TownSquareAPI.Controllers;
+
     [ApiController]
     [Route("api/[controller]")]
     public class PinController : ControllerBase
@@ -75,4 +75,3 @@ namespace TownSquareAPI.Controllers
             return NoContent();
         }
     }
-}
