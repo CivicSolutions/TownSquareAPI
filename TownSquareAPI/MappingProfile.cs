@@ -1,25 +1,31 @@
 ﻿using AutoMapper;
 using TownSquareAPI.DTOs.Community;
 using TownSquareAPI.DTOs.Pin;
+using TownSquareAPI.DTOs.Post;
 using TownSquareAPI.Models;
 
-namespace TownSquareAPI
+namespace TownSquareAPI;
+
+public class MappingProfile : Profile
 {
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            // Community
+        // Community
 
-            CreateMap<CommunityRequestDTO, Community>();
+        CreateMap<CommunityRequestDTO, Community>();
 
-            CreateMap<Community, CommunityResponseDTO>();
+        CreateMap<Community, CommunityResponseDTO>();
 
-            // Pin
+        // Pin
 
-            CreateMap<PinRequestDTO, Pin>();
+        CreateMap<PinRequestDTO, Pin>();
 
-            CreateMap<Pin, PinResponseDTO>();
-        }
+        CreateMap<Pin, PinResponseDTO>();
+
+        // Post
+
+        CreateMap<PostRequestDTO, Post>();
+
+        CreateMap<Post, PostResponseDTO>();
     }
 }

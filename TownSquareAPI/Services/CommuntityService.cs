@@ -38,7 +38,7 @@ public class CommunityService
 
     public async Task CreateMembershipRequest(int userId, int communityId, CancellationToken cancellationToken)
     {
-        var request = new UserCommunityRequest
+        var request = new UserCommunity
         {
             UserId = userId,
             CommunityId = communityId

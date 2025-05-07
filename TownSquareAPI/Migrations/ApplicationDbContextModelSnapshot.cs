@@ -152,7 +152,7 @@ namespace TownSquareAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CommunityId")
+                    b.Property<int>("CommunityId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Content")
@@ -186,7 +186,6 @@ namespace TownSquareAPI.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -206,7 +205,7 @@ namespace TownSquareAPI.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("TownSquareAPI.Models.UserCommunityRequest", b =>
+            modelBuilder.Entity("TownSquareAPI.Models.UserCommunity", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -214,11 +213,14 @@ namespace TownSquareAPI.Migrations
                     b.Property<int>("CommunityId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
                     b.HasKey("UserId", "CommunityId");
 
                     b.HasIndex("CommunityId");
 
-                    b.ToTable("UserCommunityRequest");
+                    b.ToTable("UserCommunity");
                 });
 
             modelBuilder.Entity("TownSquareAPI.Models.CommunityPost", b =>
@@ -265,7 +267,8 @@ namespace TownSquareAPI.Migrations
                     b.HasOne("TownSquareAPI.Models.Community", null)
                         .WithMany()
                         .HasForeignKey("CommunityId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TownSquareAPI.Models.User", null)
                         .WithMany()
@@ -274,7 +277,7 @@ namespace TownSquareAPI.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TownSquareAPI.Models.UserCommunityRequest", b =>
+            modelBuilder.Entity("TownSquareAPI.Models.UserCommunity", b =>
                 {
                     b.HasOne("TownSquareAPI.Models.Community", null)
                         .WithMany()
