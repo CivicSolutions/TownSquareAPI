@@ -8,21 +8,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 
-var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION") ??
-                       $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
-                       $"Database={Environment.GetEnvironmentVariable("DB_DATABASE")};" +
-                       $"Username={Environment.GetEnvironmentVariable("DB_USERNAME")};" +
-                       $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};";
+// add appsettings, dev appsettings, env variables (set config)
+builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddJsonFile($"appsettings.Development.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
-if (string.IsNullOrEmpty(connectionString) || builder.Environment.IsDevelopment())
-{
-    connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                       ?? throw new InvalidOperationException("Database connection string is not configured.");
-}
+//var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION") ??
+//                       $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
+//                       $"Database={Environment.GetEnvironmentVariable("DB_DATABASE")};" +
+//                       $"Name={Environment.GetEnvironmentVariable("DB_USERNAME")};" +
+//                       $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};";
+
+//if (string.IsNullOrEmpty(connectionString) || builder.Environment.IsDevelopment())
+//{
+//    connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+//                       ?? throw new InvalidOperationException("Database connection string is not configured.");
+//}
 
 // Register DbContext with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection") ??
+                      throw new InvalidOperationException("Database connection string is not configured.")));
 
 // Register application services
 builder.Services.AddScoped<UserService>();
