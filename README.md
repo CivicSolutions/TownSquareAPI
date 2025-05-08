@@ -48,7 +48,9 @@ TownSquareAPI provides **RESTful** endpoints for managing:
 
 -   General community posts
 
-**Base URL:** https://townsquareapi.onrender.com/
+**Base Production URL:** https://townsquareapi.onrender.com/
+
+**Base Development URL:** https://townsquareapi-dev.onrender.com/
 
 **Swagger URL:** https://townsquareapi0-1.onrender.com/swagger/index.html *-- Temporarly URL, will be replaced soon*
 
@@ -321,6 +323,7 @@ DELETE /api/User/UpdateBio/{userId}
 ## Authors
 
 - [Sergio Soares](https://www.github.com/Sergio-404)
+- [Dominik Meister](https://github.com/MinenMaster)
 - [Luka Ljubisavljevic](https://www.github.com/Lurx381)
 - [Kai Parkinson](https://www.github.com/Kai1732)
 ## Support

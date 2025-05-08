@@ -1,26 +1,25 @@
 ﻿using TownSquareAPI.Data;
 using TownSquareAPI.Models;
 
-namespace TownSquareAPI.Services
+namespace TownSquareAPI.Services;
+
+public class HelpPostService
 {
-    public class HelpPostService
+    private readonly ApplicationDbContext _dbContext;
+
+    public HelpPostService(ApplicationDbContext dbContext)
     {
-        private readonly ApplicationDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public HelpPostService(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+    public List<HelpPost> GetHelpPosts()
+    {
+        return _dbContext.HelpPost.ToList();
+    }
 
-        public List<HelpPost> GetHelpPosts()
-        {
-            return _dbContext.HelpPosts.ToList();
-        }
-
-        public void AddHelpPost(HelpPost helpPost)
-        {
-            _dbContext.HelpPosts.Add(helpPost);
-            _dbContext.SaveChanges();
-        }
+    public void AddHelpPost(HelpPost helpPost)
+    {
+        _dbContext.HelpPost.Add(helpPost);
+        _dbContext.SaveChanges();
     }
 }
