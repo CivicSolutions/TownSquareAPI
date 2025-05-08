@@ -53,15 +53,19 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Enable Swagger UI in development mode
-if (app.Environment.IsDevelopment())
+/*
+ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+*/
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.UseIpRateLimiting();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.Run();
