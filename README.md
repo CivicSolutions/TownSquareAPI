@@ -323,6 +323,7 @@ DELETE /api/User/UpdateBio/{userId}
 ## Authors
 
 - [Sergio Soares](https://www.github.com/Sergio-404)
+- [Dominik Meister](https://github.com/MinenMaster)
 - [Luka Ljubisavljevic](https://www.github.com/Lurx381)
 - [Kai Parkinson](https://www.github.com/Kai1732)
 ## Support
