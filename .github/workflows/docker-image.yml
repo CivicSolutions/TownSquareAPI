@@ -3,47 +3,41 @@ name: Docker Image CI
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  IMAGE_NAME: MinenMaster/townsquare-backend:latest
 
 jobs:
-  push_to_registry:
-    name: Push Docker image to Docker Hub
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-      attestations: write
-      id-token: write
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v4
+    publish:
+        name: publish image
+        runs-on: ubuntu-latest
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+        steps:
+        - uses: actions/checkout@v3
+        - name: Login
+          run: |
+            echo ${{ secrets.PAT }} | docker login ghcr.io -u MinenMaster --password-stdin
+        - name: Build and Publish
+          run: |
+            docker build . --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-          images: my-docker-hub-namespace/my-docker-hub-repository
+    deploy:
+        needs: publish
+        name: deploy image
+        runs-on: ubuntu-latest
 
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: index.docker.io/my-docker-hub-namespace/my-docker-hub-repository
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+        steps:
+        - name: install ssh keys
+          # check this thread to understand why its needed:
+          # <https://stackoverflow.com/a/70447517>
+          run: |
+            install -m 600 -D /dev/null ~/.ssh/id_rsa
+            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+            ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+        - name: connect and pull
+          run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && docker compose pull && docker compose up -d && exit"
+        - name: cleanup
+          run: rm -rf ~/.ssh
