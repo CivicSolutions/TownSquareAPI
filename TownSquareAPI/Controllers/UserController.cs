@@ -35,12 +35,16 @@ public class UserController : ControllerBase
     [HttpPost("Login")]
     public IActionResult Login([FromBody] LoginRequest request)
     {
-        // hash the password
-        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
-        // check if the user exists
-        var user = _userService.GetUserByEmailAndPassword(request.Email, hashedPassword);
+        // check if user with email exists
+        var user = _userService.GetUserByEmail(request.Email);
         if (user == null)
+        {
+            return Unauthorized("Invalid credentials.");
+        }
+
+        // check if password is correct
+        var isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
+        if (!isPasswordValid)
         {
             return Unauthorized("Invalid credentials.");
         }
