@@ -14,28 +14,28 @@ namespace TownSquareAPI.Services
 
         public List<Community> GetAllCommunities()
         {
-            return _dbContext.Community.ToList();
+            return _dbContext.Communities.ToList();
         }
 
         public Community? GetById(int id)
         {
-            return _dbContext.Community.FirstOrDefault(c => c.Id == id);
+            return _dbContext.Communities.FirstOrDefault(c => c.id == id);
         }
         public Community? GetByName(string name)
         {
-            return _dbContext.Community.FirstOrDefault(c => c.Name == name);
+            return _dbContext.Communities.FirstOrDefault(c => c.name == name);
         }
         public Community CreateCommunity(string name, string description, string location, bool isLicensed)
         {
             var community = new Community
             {
-                Name = name,
-                Description = description,
-                Location = location,
-                IsLicensed = isLicensed
+                name = name,
+                description = description,
+                location = location,
+                isLicensed = isLicensed
             };
 
-            _dbContext.Community.Add(community);
+            _dbContext.Communities.Add(community);
             _dbContext.SaveChanges();
 
             return community;
@@ -45,38 +45,38 @@ namespace TownSquareAPI.Services
         {
             var request = new UserCommunityRequest
             {
-                UserId = userId,
-                CommunityId = communityId
+                user_id = userId,
+                community_id = communityId
             };
             _dbContext.Add(request);
             _dbContext.SaveChanges();
         }
         public Community? UpdateCommunity(int communityId, string name, string location, string description)
         {
-            var community = _dbContext.Community.FirstOrDefault(c => c.Id == communityId);
+            var community = _dbContext.Communities.FirstOrDefault(c => c.id == communityId);
 
             if (community == null)
             {
                 return null;
             }
 
-            community.Name = name;
-            community.Location = location;
-            community.Description = description;
+            community.name = name;
+            community.location = location;
+            community.description = description;
 
             _dbContext.SaveChanges();
             return community;
         }
         public bool DeleteCommunity(int communityId)
         {
-            var community = _dbContext.Community.FirstOrDefault(c => c.Id == communityId);
+            var community = _dbContext.Communities.FirstOrDefault(c => c.id == communityId);
 
             if (community == null)
             {
                 return false;
             }
 
-            _dbContext.Community.Remove(community);
+            _dbContext.Communities.Remove(community);
             _dbContext.SaveChanges();
 
             return true;

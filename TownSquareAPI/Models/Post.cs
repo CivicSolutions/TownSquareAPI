@@ -2,11 +2,11 @@
 {
     public class Post
     {
-        public int Id { get; set; }
-        public string Content { get; set; }
-        public int UserId { get; set; }
-        public DateTime PostedAt { get; set; }
-        public int IsNews { get; set; }
-        public int? CommunityId { get; set; }
+        public int id { get; set; }
+        public string content { get; set; }
+        public int user_id { get; set; } 
+        public DateTime posttime { get; set; } 
+        public int isnews { get; set; } 
+        public int? community_id { get; set; } 
     }
 }

@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using TownSquareAPI.Services;
 using TownSquareAPI.Data;
 using TownSquareAPI.Models;
-using TownSquareAPI.Services;
+using Xunit;
 
 public class UserServiceTests : IDisposable
 {
@@ -16,7 +17,7 @@ public class UserServiceTests : IDisposable
         _dbContext = new ApplicationDbContext(options);
         _userService = new UserService(_dbContext);
     }
-
+    
     public void Dispose()
     {
         _dbContext.Database.EnsureDeleted();
@@ -30,13 +31,13 @@ public class UserServiceTests : IDisposable
         var userId = 1;
         var user = new User
         {
-            Id = userId,
-            Name = "Test User",
-            Email = "testuser@example.com",
-            Password = "password123",
-            Description = "This is a descriptiono."
+            id = userId,
+            name = "Test User",
+            email = "testuser@example.com",
+            password = "password123",
+            bio = "This is a bio."
         };
-        _dbContext.User.Add(user);
+        _dbContext.Users.Add(user);
         _dbContext.SaveChanges();
 
         // Act
@@ -44,7 +45,7 @@ public class UserServiceTests : IDisposable
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(userId, result.Id);
+        Assert.Equal(userId, result.id);
     }
 
     [Fact]
@@ -66,19 +67,19 @@ public class UserServiceTests : IDisposable
     public void CreateUser_ShouldAddUserToDatabase()
     {
         // Arrange
-        var user = new User
-        {
-            Name = "New User",
-            Email = "newuser@example.com",
-            Password = "password123",
-            Description = "This is a description."
+        var user = new User 
+        { 
+            name = "New User", 
+            email = "newuser@example.com", 
+            password = "password123", 
+            bio = "This is a bio." 
         };
 
         // Act
         _userService.CreateUser(user);
 
         // Assert
-        var createdUser = _dbContext.User.FirstOrDefault(u => u.Name == "New User");
+        var createdUser = _dbContext.Users.FirstOrDefault(u => u.name == "New User");
         Assert.NotNull(createdUser);
     }
 
@@ -87,22 +88,22 @@ public class UserServiceTests : IDisposable
     {
         // Arrange
         var userId = 1;
-        var user = new User
-        {
-            Id = userId,
-            Name = "Test User",
-            Email = "testuser@example.com",
-            Password = "password123",
-            Description = "This is a description."
+        var user = new User 
+        { 
+            id = userId, 
+            name = "Test User", 
+            email = "testuser@example.com", 
+            password = "password123", 
+            bio = "This is a bio." 
         };
-        _dbContext.User.Add(user);
+        _dbContext.Users.Add(user);
         _dbContext.SaveChanges();
 
         // Act
         _userService.DeleteUser(userId);
 
         // Assert
-        var deletedUser = _dbContext.User.Find(userId);
+        var deletedUser = _dbContext.Users.Find(userId);
         Assert.Null(deletedUser);
     }
 
@@ -112,25 +113,25 @@ public class UserServiceTests : IDisposable
         // Arrange
         var userId = 1;
         var newUsername = "Updated User";
-        var newDescription = "Updated Description";
+        var newBio = "Updated Bio";
         var user = new User
         {
-            Id = userId,
-            Name = "Test User",
-            Email = "testuser@example.com",
-            Password = "password123",
-            Description = "This is a description."
+            id = userId,
+            name = "Test User",
+            email = "testuser@example.com",
+            password = "password123",
+            bio = "This is a bio."
         };
-        _dbContext.User.Add(user);
+        _dbContext.Users.Add(user);
         _dbContext.SaveChanges();
 
         // Act
-        _userService.UpdateUser(userId, newUsername, newDescription);
+        _userService.UpdateUser(userId, newUsername, newBio);
 
         // Assert
-        var updatedUser = _dbContext.User.Find(userId);
-        Assert.Equal(newUsername, updatedUser.Name);
-        Assert.Equal(newDescription, updatedUser.Description);
+        var updatedUser = _dbContext.Users.Find(userId);
+        Assert.Equal(newUsername, updatedUser.name);
+        Assert.Equal(newBio, updatedUser.bio);
     }
 
     [Fact]
@@ -141,20 +142,20 @@ public class UserServiceTests : IDisposable
         {
             new User
             {
-                Name = "User1",
-                Email = "user1@example.com",
-                Password = "password123",
-                Description = "Description for User1"
+                name = "User1",
+                email = "user1@example.com",
+                password = "password123",
+                bio = "Bio for User1"
             },
             new User
             {
-                Name = "User2",
-                Email = "user2@example.com",
-                Password = "password123",
-                Description = "Description for User2"
+                name = "User2",
+                email = "user2@example.com",
+                password = "password123",
+                bio = "Bio for User2"
             }
         };
-        _dbContext.User.AddRange(users);
+        _dbContext.Users.AddRange(users);
         _dbContext.SaveChanges();
 
         // Act
@@ -171,12 +172,12 @@ public class UserServiceTests : IDisposable
         var email = "test@example.com";
         var user = new User
         {
-            Email = email,
-            Name = "Test User",
-            Password = "password123",
-            Description = "This is a description."
+            email = email,
+            name = "Test User",
+            password = "password123",
+            bio = "This is a bio."
         };
-        _dbContext.User.Add(user);
+        _dbContext.Users.Add(user);
         _dbContext.SaveChanges();
 
         // Act
@@ -184,7 +185,7 @@ public class UserServiceTests : IDisposable
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(email, result.Email);
+        Assert.Equal(email, result.email);
     }
 
     [Fact]

@@ -1,20 +1,22 @@
-using AspNetCoreRateLimit;
-using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using TownSquareAPI.Data;
 using TownSquareAPI.Services;
+using DotNetEnv;
+using AspNetCoreRateLimit;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 
+// Build the connection string dynamically or fall back to appsettings.json
 var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION") ??
                        $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
+                       $"Port={Environment.GetEnvironmentVariable("DB_PORT")};" +
                        $"Database={Environment.GetEnvironmentVariable("DB_DATABASE")};" +
                        $"Username={Environment.GetEnvironmentVariable("DB_USERNAME")};" +
                        $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};";
 
-if (string.IsNullOrEmpty(connectionString) || builder.Environment.IsDevelopment())
+if (string.IsNullOrEmpty(connectionString))
 {
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                        ?? throw new InvalidOperationException("Database connection string is not configured.");

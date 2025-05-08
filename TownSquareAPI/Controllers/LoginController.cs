@@ -17,14 +17,14 @@ namespace TownSquareAPI.Controllers
         [HttpPost("Login")]
         public IActionResult Login([FromBody] UserLoginRequest request)
         {
-            var user = _dbContext.User.FirstOrDefault(u => u.Name == request.Username);
+            var user = _dbContext.Users.FirstOrDefault(u => u.name == request.Username);
 
-            if (user == null || user.Password != request.Password)
+            if (user == null || user.password != request.Password)
             {
                 return Unauthorized("Invalid login credentials.");
             }
 
-            return Ok(new { Message = "Login successful!", UserId = user.Id });
+            return Ok(new { Message = "Login successful!", UserId = user.id });
         }
     }
 

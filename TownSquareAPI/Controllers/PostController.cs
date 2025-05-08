@@ -28,11 +28,11 @@ namespace TownSquareAPI.Controllers
         {
             var post = new Post
             {
-                Content = postDto.content,
-                UserId = postDto.user_id,
-                IsNews = postDto.isnews,
-                PostedAt = DateTime.UtcNow,
-                CommunityId = postDto.community_id
+                content = postDto.content,
+                user_id = postDto.user_id,
+                isnews = postDto.isnews,
+                posttime = DateTime.UtcNow,
+                community_id = postDto.community_id
             };
 
             _postService.CreatePost(post);

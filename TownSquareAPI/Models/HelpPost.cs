@@ -2,12 +2,12 @@
 {
     public class HelpPost
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public int Price { get; set; }
-        public string Telephone { get; set; }
-        public DateTime PostedAt { get; set; }
-        public int UserId { get; set; }
+        public int id { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public int price { get; set; }
+        public string telephone { get; set; }
+        public DateTime helpposttime { get; set; }
+        public int user_id { get; set; } 
     }
 }
