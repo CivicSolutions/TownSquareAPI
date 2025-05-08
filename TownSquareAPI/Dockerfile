@@ -12,7 +12,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["TownSquareAPI/TownSquareAPI.csproj", "TownSquareAPI/"]
+COPY ["TownSquareAPI.csproj", "."]
 RUN dotnet restore "./TownSquareAPI/TownSquareAPI.csproj"
 COPY . .
 WORKDIR "/src/TownSquareAPI"
