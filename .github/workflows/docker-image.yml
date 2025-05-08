@@ -12,7 +12,7 @@ env:
 jobs:
     publish:
         name: publish image
-        runs-on: ubuntu-24.04-arm
+        runs-on: [self-hosted, linux, ARM64]
 
         steps:
         - uses: actions/checkout@v3
@@ -27,7 +27,7 @@ jobs:
     deploy:
         needs: publish
         name: deploy image
-        runs-on: ubuntu-24.04-arm
+        runs-on: [self-hosted, linux, ARM64]
 
         steps:
         - name: install ssh keys
