@@ -50,16 +50,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpsRedirection(options =>
-{
-    options.HttpsPort = 443;
-});
-
 builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
 var app = builder.Build();
-
-app.UseForwardedHeaders(); // <-- NEU HIER
 
 // Enable Swagger UI in development mode
 if (app.Environment.IsDevelopment())
@@ -68,7 +61,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.UseIpRateLimiting();
