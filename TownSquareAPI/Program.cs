@@ -55,16 +55,13 @@ builder.WebHost.UseUrls("http://0.0.0.0:8080");
 var app = builder.Build();
 
 // Enable Swagger UI in development mode
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.UseIpRateLimiting();
