@@ -39,6 +39,22 @@ public class UserService
         return user?.Id ?? -1;
     }
 
+    public List<User> GetAllUserIdsByCommunityId(int communityId)
+    {
+        // get all users in a community with the UserCommunity table
+        var userCommunity = _dbContext.UserCommunity
+            .Where(uc => uc.CommunityId == communityId)
+            .Select(uc => uc.UserId)
+            .ToList();
+
+        // get all users with the user ids
+        var users = _dbContext.User
+            .Where(u => userCommunity.Contains(u.Id))
+            .ToList();
+
+        return users;
+    }
+
     public void DeleteUserById(int userId)
     {
         var user = _dbContext.User.Find(userId);
@@ -48,7 +64,6 @@ public class UserService
             _dbContext.SaveChanges();
         }
     }
-
 
     public void UpdateUser(int userId, string newUsername, string newDescription)
     {

@@ -10,14 +10,15 @@ public class TokenService
     private static readonly string Secret = Environment.GetEnvironmentVariable("JWT_SECRET") ??
         throw new InvalidOperationException("JWT secret is not configured.");
 
-    public static string GenerateToken(string username)
+    public static string GenerateToken(string email)
     {
+        Console.WriteLine(Secret);
         byte[] key = Convert.FromBase64String(Secret);
         SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
         SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[] {
-                      new Claim(ClaimTypes.Name, username)}),
+                      new Claim(ClaimTypes.Name, email)}),
             Expires = DateTime.UtcNow.AddMinutes(30),
             SigningCredentials = new SigningCredentials(securityKey,
             SecurityAlgorithms.HmacSha256Signature)

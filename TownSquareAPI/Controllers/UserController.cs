@@ -65,6 +65,17 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
+    [HttpGet("GetAllByCommunityId")]
+    public IActionResult GetAllByCommunity(int communityId)
+    {
+        var userIds = _userService.GetAllUserIdsByCommunityId(communityId);
+        if (userIds == null || !userIds.Any())
+        {
+            return NotFound($"No users found in community with ID {communityId}.");
+        }
+        return Ok(userIds);
+    }
+
     [HttpPut("Update/{userId}")]
     public IActionResult Update(int userId, [FromBody] UserRequestDTO updateUserRequest)
     {
