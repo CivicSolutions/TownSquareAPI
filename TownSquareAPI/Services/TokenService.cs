@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.Text;
 
 namespace TownSquareAPI.Services;
 
@@ -13,7 +14,16 @@ public class TokenService
     public static string GenerateToken(string email)
     {
         Console.WriteLine(Secret);
-        byte[] key = Convert.FromBase64String(Secret);
+        byte[] key = Encoding.UTF8.GetBytes(Secret);
+        Console.WriteLine(key.Length);
+        Console.WriteLine(key);
+        Console.WriteLine(Encoding.UTF8.GetString(key));
+        Console.WriteLine(Encoding.UTF8.GetString(Convert.FromBase64String(Secret)));
+        Console.WriteLine(Convert.ToBase64String(key));
+        Console.WriteLine(Convert.ToBase64String(Convert.FromBase64String(Secret)));
+        Console.WriteLine(Secret.Length);
+        Console.WriteLine(Secret);
+        Console.WriteLine(key[key.Length - 1]);
         SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
         SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
         {
