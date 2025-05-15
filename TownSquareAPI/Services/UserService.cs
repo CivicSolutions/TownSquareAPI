@@ -39,7 +39,7 @@ public class UserService
         return user?.Id ?? -1;
     }
 
-    public List<User> GetAllUserIdsByCommunityId(int communityId)
+    public List<User> GetAllUsersByCommunityId(int communityId)
     {
         // get all users in a community with the UserCommunity table
         var userCommunity = _dbContext.UserCommunity

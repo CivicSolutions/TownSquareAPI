@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using TownSquareAPI.DTOs.User;
 using TownSquareAPI.Models;
 using TownSquareAPI.Services;
@@ -10,10 +11,14 @@ namespace TownSquareAPI.Controllers;
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
+    private readonly TokenService _tokenService;
+    private readonly IMapper _mapper;
 
-    public UserController(UserService userService)
+    public UserController(UserService userService, TokenService tokenService, IMapper mapper)
     {
         _userService = userService;
+        _tokenService = tokenService;
+        _mapper = mapper;
     }
 
     [HttpPost("Register")]
@@ -50,14 +55,35 @@ public class UserController : ControllerBase
         }
 
         // generate a token
-        var token = TokenService.GenerateToken(user.Email);
+        var token = _tokenService.GenerateToken(user.Email);
         return Ok(new { token });
+    }
+
+    [HttpPost("ValidateToken")]
+    public async Task<IActionResult> ValidateToken([FromBody] TokenRequest request)
+    {
+        // validate the token
+        string? email = await _tokenService.ValidateTokenAsync(request.Token);
+        if (email == null)
+        {
+            return Unauthorized("Invalid token.");
+        }
+        // get the user by email
+        var user = _userService.GetUserByEmail(email);
+        if (user == null)
+        {
+            return NotFound("User not found.");
+        }
+
+        // map the user to a UserResponseDTO
+        UserResponseDTO userResponseDTO = _mapper.Map<UserResponseDTO>(user);
+        return Ok(userResponseDTO);
     }
 
     [HttpGet("GetById/{userId}")]
     public IActionResult GetById(int userId)
     {
-        var user = _userService.GetUserById(userId);
+        User? user = _userService.GetUserById(userId);
         if (user == null)
         {
             return NotFound($"User with ID {userId} not found.");
@@ -68,12 +94,16 @@ public class UserController : ControllerBase
     [HttpGet("GetAllByCommunityId")]
     public IActionResult GetAllByCommunity(int communityId)
     {
-        var userIds = _userService.GetAllUserIdsByCommunityId(communityId);
-        if (userIds == null || !userIds.Any())
+        List<User> users = _userService.GetAllUsersByCommunityId(communityId);
+
+        if (users == null || users.Count == 0)
         {
             return NotFound($"No users found in community with ID {communityId}.");
         }
-        return Ok(userIds);
+
+        // use AutoMapper to map the list of users to a list of UserResponseDTO
+        List<UserResponseDTO> userResponseDTOs = _mapper.Map<List<UserResponseDTO>>(users);
+        return Ok(userResponseDTOs);
     }
 
     [HttpPut("Update/{userId}")]
