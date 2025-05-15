@@ -12,10 +12,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["TownSquareAPI/TownSquareAPI.csproj", "TownSquareAPI/"]
-RUN dotnet restore "./TownSquareAPI/TownSquareAPI.csproj"
+COPY ["TownSquareAPI.csproj", "."]
+RUN dotnet restore "./TownSquareAPI.csproj"
 COPY . .
-WORKDIR "/src/TownSquareAPI"
+WORKDIR "/src"
 RUN dotnet build "./TownSquareAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Diese Stufe wird verwendet, um das Dienstprojekt zu veröffentlichen, das in die letzte Phase kopiert werden soll.
