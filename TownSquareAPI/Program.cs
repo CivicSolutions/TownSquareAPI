@@ -24,11 +24,11 @@ var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION") ??
                        $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};" +
                        "SSL Mode=Require;Trust Server Certificate=true";
 
-//if (string.IsNullOrEmpty(connectionString) || builder.Environment.IsDevelopment())
-//{
-//    connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-//                       ?? throw new InvalidOperationException("Database connection string is not configured.");
-//}
+if (string.IsNullOrEmpty(connectionString) || builder.Environment.IsDevelopment())
+{
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                       ?? throw new InvalidOperationException("Database connection string is not configured.");
+}
 
 // Register DbContext with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -114,11 +114,14 @@ builder.WebHost.UseUrls("http://0.0.0.0:80");
 var app = builder.Build();
 
 // Enable Swagger UI in development mode
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthentication();
 app.UseAuthorization();
