@@ -19,11 +19,11 @@ public class CommunityController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("GetAll")]
+    [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
         List<Community> communities = await _communityService.GetAll(cancellationToken);
-        List<CommunityResponseDTO> communityDTOs = _mapper.Map<List<CommunityResponseDTO>>(communities); // kind of useless when the mapping is 1:1 but it's good practice
+        List<CommunityResponseDTO> communityDTOs = _mapper.Map<List<CommunityResponseDTO>>(communities); // kind of useless when the mapping is 1:1 but it's good practice (edit: removed isLicensed so it now makes sense)
         return Ok(communityDTOs);
     }
 
