@@ -48,7 +48,7 @@ TownSquareAPI provides **RESTful** endpoints for managing:
 
 -   General community posts
 
-**Base Production URL:** https://townsquareapi.onrender.com/
+**Base Production URL:** http://mc.dominikmeister.com/api
 
 **Base Development URL:** https://townsquareapi-dev.onrender.com/
 
