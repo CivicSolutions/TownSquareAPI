@@ -8,5 +8,5 @@ public class HelpPost
     public int Price { get; set; }
     public string Telephone { get; set; }
     public DateTime PostedAt { get; set; }
-    public int UserId { get; set; }
+    public string UserId { get; set; }
 }

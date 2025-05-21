@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TownSquareAPI.DTOs.Community;
 using TownSquareAPI.Models;
@@ -8,6 +9,7 @@ namespace TownSquareAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class CommunityController : ControllerBase
 {
     private readonly CommunityService _communityService;
@@ -98,7 +100,7 @@ public class CommunityController : ControllerBase
     }
 
     [HttpPut("RequestMembership")]
-    public async Task<IActionResult> RequestMembership(int userId, int communityId, CancellationToken cancellationToken)
+    public async Task<IActionResult> RequestMembership(string userId, int communityId, CancellationToken cancellationToken)
     {
         await _communityService.CreateMembershipRequest(userId, communityId, cancellationToken);
         return Ok("Membership request submitted.");

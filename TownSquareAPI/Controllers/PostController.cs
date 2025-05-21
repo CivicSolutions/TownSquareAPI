@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TownSquareAPI.DTOs.Post;
 using TownSquareAPI.Models;
@@ -8,6 +9,7 @@ namespace TownSquareAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class PostController : ControllerBase
 {
     private readonly PostService _postService;
@@ -19,6 +21,7 @@ public class PostController : ControllerBase
         _mapper = mapper;
     }
 
+    [Authorize]
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll(int communityId, CancellationToken cancellationToken)
     {

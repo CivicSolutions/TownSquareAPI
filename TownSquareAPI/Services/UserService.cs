@@ -1,87 +1,58 @@
-﻿using TownSquareAPI.Data;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using TownSquareAPI.Models;
 
 namespace TownSquareAPI.Services;
 
 public class UserService
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public UserService(ApplicationDbContext dbContext)
+    public UserService(UserManager<ApplicationUser> userManager)
     {
-        _dbContext = dbContext;
+        _userManager = userManager;
     }
 
-    public void CreateUser(User user)
+    public async Task<List<ApplicationUser>> GetAllUsersAsync()
     {
-        if (user == null)
+        return await _userManager.Users.ToListAsync();
+    }
+
+    public async Task<ApplicationUser?> GetUserByIdAsync(string userId)
+    {
+        return await _userManager.FindByIdAsync(userId);
+    }
+
+    public async Task<List<ApplicationUser>> GetUserByFirstAndLastNameAsync(string? firstName, string? lastName)
+    {
+        var query = _userManager.Users.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(firstName))
         {
-            throw new ArgumentNullException(nameof(user));
+            var lowerFirstName = firstName.ToLower();
+            query = query.Where(u => u.FirstName.ToLower().Contains(lowerFirstName));
+        }
+        if (!string.IsNullOrWhiteSpace(lastName))
+        {
+            var lowerLastName = lastName.ToLower();
+            query = query.Where(u => u.LastName.ToLower().Contains(lowerLastName));
         }
 
-        _dbContext.User.Add(user);
-        _dbContext.SaveChanges();
+        return await query.ToListAsync();
     }
 
-    public User? GetUserById(int userId)
+    public async Task<ApplicationUser?> GetUserByEmailAsync(string email)
     {
-        return _dbContext.User.FirstOrDefault(u => u.Id == userId);
+        return await _userManager.FindByEmailAsync(email);
     }
 
-    public User? GetUserByEmailAndPassword(string email, string password)
+    public async Task<IdentityResult> UpdateUserAsync(ApplicationUser user)
     {
-        return _dbContext.User.FirstOrDefault(u => u.Email == email && u.Password == password);
+        return await _userManager.UpdateAsync(user);
     }
 
-    public int GetUserIdByEmail(string email)
+    public async Task<IdentityResult> DeleteUserAsync(ApplicationUser user)
     {
-        var user = _dbContext.User.FirstOrDefault(u => u.Email == email);
-        return user?.Id ?? -1;
-    }
-
-    public void DeleteUserById(int userId)
-    {
-        var user = _dbContext.User.Find(userId);
-        if (user != null)
-        {
-            _dbContext.User.Remove(user);
-            _dbContext.SaveChanges();
-        }
-    }
-
-
-    public void UpdateUser(int userId, string newUsername, string newDescription)
-    {
-        var user = _dbContext.User.Find(userId);
-        if (user != null)
-        {
-            user.Name = newUsername;
-            user.Description = newDescription;
-            _dbContext.SaveChanges();
-        }
-    }
-
-    public void DeleteUser(int userId)
-    {
-        var user = _dbContext.User.Find(userId);
-        if (user != null)
-        {
-            _dbContext.User.Remove(user);
-            _dbContext.SaveChanges();
-        }
-        else
-        {
-            throw new ArgumentException("User not found");
-        }
-    }
-
-    public List<User> GetAllUsers()
-    {
-        return _dbContext.User.ToList();
-    }
-
-    public User? GetUserByEmail(string email)
-    {
-        return _dbContext.User.FirstOrDefault(u => u.Email == email);
+        return await _userManager.DeleteAsync(user);
     }
 }
