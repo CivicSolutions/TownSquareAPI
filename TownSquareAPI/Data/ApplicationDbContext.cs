@@ -1,15 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TownSquareAPI.Models;
 
 namespace TownSquareAPI.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
-    public DbSet<User> User { get; set; }
+    //public DbSet<User> User { get; set; }
+    public DbSet<ApplicationUser> ApplicationUser { get; set; }
     public DbSet<Post> Post { get; set; }
     public DbSet<Community> Community { get; set; }
     public DbSet<HelpPost> HelpPost { get; set; }
@@ -30,7 +32,7 @@ public class ApplicationDbContext : DbContext
             );
 
         modelBuilder.Entity<HelpPost>()
-            .HasOne<User>()
+            .HasOne<ApplicationUser>()
             .WithMany()
             .HasForeignKey(h => h.UserId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -48,7 +50,7 @@ public class ApplicationDbContext : DbContext
             );
 
         modelBuilder.Entity<Post>()
-            .HasOne<User>()
+            .HasOne<ApplicationUser>()
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -72,7 +74,7 @@ public class ApplicationDbContext : DbContext
             );
 
         modelBuilder.Entity<Pin>()
-            .HasOne<User>()
+            .HasOne<ApplicationUser>()
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -88,7 +90,7 @@ public class ApplicationDbContext : DbContext
             .HasKey(ucr => new { ucr.UserId, ucr.CommunityId });
 
         modelBuilder.Entity<UserCommunity>()
-            .HasOne<User>()
+            .HasOne<ApplicationUser>()
             .WithMany()
             .HasForeignKey(ucr => ucr.UserId)
             .OnDelete(DeleteBehavior.Cascade);

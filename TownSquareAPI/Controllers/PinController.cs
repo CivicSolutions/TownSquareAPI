@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TownSquareAPI.DTOs.Pin;
 using TownSquareAPI.Models;
@@ -8,6 +9,7 @@ namespace TownSquareAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class PinController : ControllerBase
 {
     private readonly PinService _pinService;

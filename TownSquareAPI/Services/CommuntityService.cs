@@ -36,7 +36,7 @@ public class CommunityService
         return community;
     }
 
-    public async Task CreateMembershipRequest(int userId, int communityId, CancellationToken cancellationToken)
+    public async Task CreateMembershipRequest(string userId, int communityId, CancellationToken cancellationToken)
     {
         var request = new UserCommunity
         {
