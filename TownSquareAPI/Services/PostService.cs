@@ -13,14 +13,14 @@ public class PostService
         _dbContext = dbContext;
     }
 
-    public async Task<List<Post>> GetAll(int communityID, CancellationToken cancellationToken)
+    public async Task<List<Post>> GetAll(CancellationToken cancellationToken)
     {
-        return await _dbContext.Post.Where(p => p.CommunityId == communityID).ToListAsync(cancellationToken);
+        return await _dbContext.Post.ToListAsync(cancellationToken);
     }
 
-    public async Task<Post?> GetById(int communityId, int id, CancellationToken cancellationToken)
+    public async Task<Post?> GetById(int id, CancellationToken cancellationToken)
     {
-        return await _dbContext.Post.FirstOrDefaultAsync(p => p.CommunityId == communityId && p.Id == id, cancellationToken);
+        return await _dbContext.Post.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
     public async Task<Post> Create(Post post, CancellationToken cancellationToken)
@@ -30,9 +30,9 @@ public class PostService
         return post;
     }
 
-    public async Task<Post?> Update(int communityId, int postId, Post post, CancellationToken cancellationToken)
+    public async Task<Post?> Update(int postId, Post post, CancellationToken cancellationToken)
     {
-        Post? postToUpdate = await _dbContext.Post.FirstOrDefaultAsync(p => p.CommunityId == communityId && p.Id == postId, cancellationToken);
+        Post? postToUpdate = await _dbContext.Post.FirstOrDefaultAsync(p => p.Id == postId, cancellationToken);
 
         if (postToUpdate == null)
         {
@@ -44,9 +44,33 @@ public class PostService
         return post;
     }
 
-    public async Task<bool> Delete(int communityId, int postId, CancellationToken cancellationToken)
+    public async Task<Post?> IncrementLikeCount(int postId, CancellationToken cancellationToken)
     {
-        var post = await _dbContext.Post.FirstOrDefaultAsync(p => p.CommunityId == communityId && p.Id == postId, cancellationToken);
+        var post = await _dbContext.Post.FirstOrDefaultAsync(p => p.Id == postId, cancellationToken);
+        if (post == null)
+            return null;
+
+        post.LikeCount++;
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return post;
+    }
+
+    public async Task<Post?> DecrementLikeCount(int postId, CancellationToken cancellationToken)
+    {
+        var post = await _dbContext.Post.FirstOrDefaultAsync(p => p.Id == postId, cancellationToken);
+        if (post == null)
+            return null;
+
+        if (post.LikeCount > 0)
+            post.LikeCount--;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return post;
+    }
+
+    public async Task<bool> Delete(int postId, CancellationToken cancellationToken)
+    {
+        var post = await _dbContext.Post.FirstOrDefaultAsync(p => p.Id == postId, cancellationToken);
 
         if (post == null)
         {

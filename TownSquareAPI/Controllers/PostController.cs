@@ -23,21 +23,25 @@ public class PostController : ControllerBase
 
     [Authorize]
     [HttpGet("GetAll")]
-    public async Task<IActionResult> GetAll(int communityId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var posts = await _postService.GetAll(communityId, cancellationToken);
-        return Ok(posts);
+        var posts = await _postService.GetAll(cancellationToken);
+
+        PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(posts);
+        return Ok(postResponseDTO);
     }
 
     [HttpGet("GetById")]
-    public async Task<IActionResult> GetById(int communityId, int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
     {
-        var post = await _postService.GetById(communityId, id, cancellationToken);
+        var post = await _postService.GetById(id, cancellationToken);
         if (post == null)
         {
             return NotFound($"Post with ID {id} not found.");
         }
-        return Ok(post);
+
+        PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(post);
+        return Ok(postResponseDTO);
     }
 
     [HttpPost]
@@ -45,29 +49,53 @@ public class PostController : ControllerBase
     {
         Post post = _mapper.Map<Post>(request);
         Post createdPost = await _postService.Create(post, cancellationToken);
-        PostResponseDTO postDto = _mapper.Map<PostResponseDTO>(createdPost);
-        return CreatedAtAction(nameof(GetById), new { id = postDto.Id }, postDto);
+        PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(createdPost);
+        return CreatedAtAction(nameof(GetById), new { id = postResponseDTO.Id }, postResponseDTO);
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(int communityId, int postId, [FromBody] PostRequestDTO request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(int postId, [FromBody] PostRequestDTO request, CancellationToken cancellationToken)
     {
         Post post = _mapper.Map<Post>(request);
-        Post? updatedPost = await _postService.Update(communityId, postId, post, cancellationToken);
+        Post? updatedPost = await _postService.Update(postId, post, cancellationToken);
 
         if (updatedPost == null)
         {
             return NotFound($"Post with ID {postId} not found.");
         }
 
-        PostResponseDTO postDto = _mapper.Map<PostResponseDTO>(updatedPost);
-        return CreatedAtAction(nameof(GetById), new { id = postDto.Id }, postDto);
+        PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(updatedPost);
+        return CreatedAtAction(nameof(GetById), new { id = postResponseDTO.Id }, postResponseDTO);
+    }
+
+    [HttpPost("Like")]
+    public async Task<IActionResult> Like(int postId, CancellationToken cancellationToken)
+    {
+        Post? post = await _postService.IncrementLikeCount(postId, cancellationToken);
+        if (post == null)
+        {
+            return NotFound($"Post with ID {postId} not found.");
+        }
+        PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(post);
+        return Ok(postResponseDTO);
+    }
+
+    [HttpPost("Unlike")]
+    public async Task<IActionResult> Unlike(int postId, CancellationToken cancellationToken)
+    {
+        Post? post = await _postService.DecrementLikeCount(postId, cancellationToken);
+        if (post == null)
+        {
+            return NotFound($"Post with ID {postId} not found.");
+        }
+        PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(post);
+        return Ok(postResponseDTO);
     }
 
     [HttpDelete]
-    public async Task<IActionResult> Delete(int communityId, int postId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(int postId, CancellationToken cancellationToken)
     {
-        bool deleted = await _postService.Delete(communityId, postId, cancellationToken);
+        bool deleted = await _postService.Delete(postId, cancellationToken);
 
         if (!deleted)
         {
