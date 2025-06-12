@@ -16,8 +16,8 @@ public class ProfilePictureService
         // Connect to MongoDB database "ProfilePictures"
         var database = mongoClient.GetDatabase("ProfilePictures");
 
-        // Access the collection named "ProfilePictures"
-        _profilePictures = database.GetCollection<ProfilePicture>("ProfilePictures");
+        // Access the collection named "Pictures"
+        _profilePictures = database.GetCollection<ProfilePicture>("Pictures");
     }
 
     // Get ProfilePicture by UserId
