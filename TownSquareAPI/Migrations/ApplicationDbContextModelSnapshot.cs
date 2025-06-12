@@ -298,8 +298,9 @@ namespace TownSquareAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -333,8 +334,9 @@ namespace TownSquareAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<double>("XCord")
                         .HasColumnType("double precision");
@@ -369,11 +371,15 @@ namespace TownSquareAPI.Migrations
                     b.Property<int>("IsNews")
                         .HasColumnType("integer");
 
+                    b.Property<int>("LikeCount")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("PostedAt")
                         .HasColumnType("timestamp");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -384,38 +390,10 @@ namespace TownSquareAPI.Migrations
                     b.ToTable("Post");
                 });
 
-            modelBuilder.Entity("TownSquareAPI.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
-                });
-
             modelBuilder.Entity("TownSquareAPI.Models.UserCommunity", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
 
                     b.Property<int>("CommunityId")
                         .HasColumnType("integer");
@@ -498,7 +476,7 @@ namespace TownSquareAPI.Migrations
 
             modelBuilder.Entity("TownSquareAPI.Models.HelpPost", b =>
                 {
-                    b.HasOne("TownSquareAPI.Models.User", null)
+                    b.HasOne("TownSquareAPI.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -513,7 +491,7 @@ namespace TownSquareAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TownSquareAPI.Models.User", null)
+                    b.HasOne("TownSquareAPI.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -528,7 +506,7 @@ namespace TownSquareAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TownSquareAPI.Models.User", null)
+                    b.HasOne("TownSquareAPI.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -543,7 +521,7 @@ namespace TownSquareAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TownSquareAPI.Models.User", null)
+                    b.HasOne("TownSquareAPI.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

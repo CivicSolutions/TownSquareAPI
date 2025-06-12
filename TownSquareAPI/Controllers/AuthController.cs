@@ -50,7 +50,13 @@ public class AuthController : ControllerBase
             return Unauthorized("Ungültige Anmeldedaten");
 
         var token = GenerateJwtToken(user);
-        return Ok(new { token });
+        var userId = await _userManager.GetUserIdAsync(user);
+
+        return Ok(new
+        {
+            userId,
+            token,
+        });
     }
 
     private string GenerateJwtToken(ApplicationUser user)

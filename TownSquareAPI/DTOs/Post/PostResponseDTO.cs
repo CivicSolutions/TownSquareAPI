@@ -8,4 +8,6 @@ public class PostResponseDTO
     public DateTime PostedAt { get; set; }
     public int IsNews { get; set; }
     public int CommunityId { get; set; }
+    public int LikeCount { get; set; }
+    public bool IsLikedByCurrentUser { get; set; }
 }
