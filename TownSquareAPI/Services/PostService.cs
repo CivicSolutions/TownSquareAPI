@@ -44,25 +44,48 @@ public class PostService
         return post;
     }
 
-    public async Task<Post?> IncrementLikeCount(int postId, CancellationToken cancellationToken)
+    public async Task<Post?> Like(int postId, string userId, CancellationToken cancellationToken)
     {
         var post = await _dbContext.Post.FirstOrDefaultAsync(p => p.Id == postId, cancellationToken);
         if (post == null)
             return null;
 
+        var existingLike = await _dbContext.PostLike
+            .FirstOrDefaultAsync(pl => pl.PostId == postId && pl.UserId == userId, cancellationToken);
+
+        if (existingLike != null)
+            return post;
+
         post.LikeCount++;
+
+        await _dbContext.PostLike.AddAsync(new PostLike
+        {
+            PostId = postId,
+            UserId = userId
+        }, cancellationToken);
+
         await _dbContext.SaveChangesAsync(cancellationToken);
         return post;
     }
 
-    public async Task<Post?> DecrementLikeCount(int postId, CancellationToken cancellationToken)
+    public async Task<Post?> Unlike(int postId, string userId, CancellationToken cancellationToken)
     {
         var post = await _dbContext.Post.FirstOrDefaultAsync(p => p.Id == postId, cancellationToken);
         if (post == null)
             return null;
 
+        var existingLike = await _dbContext.PostLike
+            .FirstOrDefaultAsync(pl => pl.PostId == postId && pl.UserId == userId, cancellationToken);
+
+        if (existingLike == null)
+            return post;
+
         if (post.LikeCount > 0)
             post.LikeCount--;
+
+        await _dbContext.PostLike
+            .Where(pl => pl.PostId == postId && pl.UserId == userId)
+            .ExecuteDeleteAsync(cancellationToken);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
         return post;
@@ -80,5 +103,10 @@ public class PostService
         _dbContext.Post.Remove(post);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return true;
+    }
+
+    public async Task<bool> IsPostLikedByUser(int postId, string userId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.PostLike.AnyAsync(p => p.PostId == postId && p.UserId == userId, cancellationToken);
     }
 }

@@ -43,7 +43,7 @@ public class PinController : ControllerBase
     public async Task<IActionResult> Create([FromBody] PinRequestDTO request, CancellationToken cancellationToken)
     {
         Pin pin = _mapper.Map<Pin>(request);
-        pin.PostedAt = DateTime.UtcNow;
+        pin.PostedAt = DateTime.Now;
         Pin createdPin = await _pinService.Create(pin, cancellationToken);
         PinResponseDTO pinDto = _mapper.Map<PinResponseDTO>(createdPin);
         return CreatedAtAction(nameof(GetById), new { id = pinDto.Id }, pinDto);

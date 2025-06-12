@@ -16,6 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Community> Community { get; set; }
     public DbSet<HelpPost> HelpPost { get; set; }
     public DbSet<Pin> Pin { get; set; }
+    public DbSet<PostLike> PostLike { get; set; }
     public DbSet<UserCommunity> UserCommunity { get; set; }
     public DbSet<CommunityPost> CommunityPost { get; set; }
 
@@ -83,6 +84,21 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne<Community>()
             .WithMany()
             .HasForeignKey(p => p.CommunityId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // PostLikes table
+        modelBuilder.Entity<PostLike>()
+            .HasKey(p => new { p.UserId, p.PostId });
+
+        modelBuilder.Entity<PostLike>()
+            .HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<PostLike>()
+            .HasOne<Post>()
+            .WithMany()
+            .HasForeignKey(p => p.PostId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // user_community_membership table
