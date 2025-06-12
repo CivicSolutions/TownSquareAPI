@@ -154,6 +154,21 @@ namespace TownSquareAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PostLike", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PostLike");
+                });
+
             modelBuilder.Entity("TownSquareAPI.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -452,6 +467,21 @@ namespace TownSquareAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
+                    b.HasOne("TownSquareAPI.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PostLike", b =>
+                {
+                    b.HasOne("TownSquareAPI.Models.Post", null)
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TownSquareAPI.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")

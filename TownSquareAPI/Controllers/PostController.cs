@@ -21,18 +21,21 @@ public class PostController : ControllerBase
         _mapper = mapper;
     }
 
-    [Authorize]
     [HttpGet("GetAll")]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll(string userId, CancellationToken cancellationToken)
     {
         var posts = await _postService.GetAll(cancellationToken);
 
-        PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(posts);
-        return Ok(postResponseDTO);
+        List<PostResponseDTO> postResponseDTOs = _mapper.Map<List<PostResponseDTO>>(posts);
+        foreach (var post in postResponseDTOs)
+        {
+            post.IsLikedByCurrentUser = await _postService.IsPostLikedByUser(post.Id, userId, cancellationToken);
+        }
+        return Ok(postResponseDTOs);
     }
 
     [HttpGet("GetById")]
-    public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetById(int id, string userId, CancellationToken cancellationToken)
     {
         var post = await _postService.GetById(id, cancellationToken);
         if (post == null)
@@ -41,6 +44,7 @@ public class PostController : ControllerBase
         }
 
         PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(post);
+        postResponseDTO.IsLikedByCurrentUser = await _postService.IsPostLikedByUser(id, userId, cancellationToken);
         return Ok(postResponseDTO);
     }
 
@@ -48,7 +52,7 @@ public class PostController : ControllerBase
     public async Task<IActionResult> Create([FromBody] PostRequestDTO request, CancellationToken cancellationToken)
     {
         Post post = _mapper.Map<Post>(request);
-        post.PostedAt = DateTime.UtcNow;
+        post.PostedAt = DateTime.Now;
         Post createdPost = await _postService.Create(post, cancellationToken);
         PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(createdPost);
         return CreatedAtAction(nameof(GetById), new { id = postResponseDTO.Id }, postResponseDTO);
@@ -70,26 +74,31 @@ public class PostController : ControllerBase
     }
 
     [HttpPost("Like")]
-    public async Task<IActionResult> Like(int postId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Like(int postId, string userId, CancellationToken cancellationToken)
     {
-        Post? post = await _postService.IncrementLikeCount(postId, cancellationToken);
+        // first check if the user has already liked the post
+
+
+        Post? post = await _postService.Like(postId, userId, cancellationToken);
         if (post == null)
         {
             return NotFound($"Post with ID {postId} not found.");
         }
         PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(post);
+        postResponseDTO.IsLikedByCurrentUser = await _postService.IsPostLikedByUser(postId, userId, cancellationToken);
         return Ok(postResponseDTO);
     }
 
     [HttpPost("Unlike")]
-    public async Task<IActionResult> Unlike(int postId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Unlike(int postId, string userId, CancellationToken cancellationToken)
     {
-        Post? post = await _postService.DecrementLikeCount(postId, cancellationToken);
+        Post? post = await _postService.Unlike(postId, userId, cancellationToken);
         if (post == null)
         {
             return NotFound($"Post with ID {postId} not found.");
         }
         PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(post);
+        postResponseDTO.IsLikedByCurrentUser = await _postService.IsPostLikedByUser(postId, userId, cancellationToken);
         return Ok(postResponseDTO);
     }
 
