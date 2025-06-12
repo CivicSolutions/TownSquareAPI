@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using TownSquareAPI.Data;
 using TownSquareAPI.Models;
 using TownSquareAPI.Services;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,16 @@ if (string.IsNullOrEmpty(connectionString) || builder.Environment.IsDevelopment(
 // Register DbContext with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+// MongoDB connection string
+var mongoConnectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING")
+    ?? "mongodb://localhost:27017"; // fallback local connection
+
+// Register IMongoClient as singleton
+builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
+{
+    return new MongoClient(mongoConnectionString);
+});
 
 // identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -65,6 +76,7 @@ builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<CommunityService>();
 builder.Services.AddScoped<HelpPostService>();
 builder.Services.AddScoped<PinService>();
+builder.Services.AddScoped<ProfilePictureService>();
 
 builder.Services.AddMemoryCache();
 builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
