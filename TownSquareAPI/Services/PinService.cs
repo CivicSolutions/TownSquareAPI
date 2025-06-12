@@ -13,14 +13,14 @@ public class PinService
         _dbContext = dbContext;
     }
 
-    public async Task<List<Pin>> GetAll(int communityID, CancellationToken cancellationToken)
+    public async Task<List<Pin>> GetAll(CancellationToken cancellationToken)
     {
-        return await _dbContext.Pin.Where(p => p.CommunityId == communityID).ToListAsync(cancellationToken);
+        return await _dbContext.Pin.ToListAsync(cancellationToken);
     }
 
-    public async Task<Pin?> GetById(int communityId, int id, CancellationToken cancellationToken)
+    public async Task<Pin?> GetById(int id, CancellationToken cancellationToken)
     {
-        return await _dbContext.Pin.FirstOrDefaultAsync(p => p.CommunityId == communityId && p.Id == id, cancellationToken);
+        return await _dbContext.Pin.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
     public async Task<Pin> Create(Pin pin, CancellationToken cancellationToken)
@@ -30,9 +30,9 @@ public class PinService
         return pin;
     }
 
-    public async Task<Pin?> Update(int communityId, int pinId, Pin pin, CancellationToken cancellationToken)
+    public async Task<Pin?> Update(int pinId, Pin pin, CancellationToken cancellationToken)
     {
-        Pin? pinToUpdate = await _dbContext.Pin.FirstOrDefaultAsync(p => p.CommunityId == communityId && p.Id == pinId, cancellationToken);
+        Pin? pinToUpdate = await _dbContext.Pin.FirstOrDefaultAsync(p => p.Id == pinId, cancellationToken);
 
         if (pinToUpdate == null)
         {
@@ -44,9 +44,9 @@ public class PinService
         return pin;
     }
 
-    public async Task<bool> Delete(int communityId, int pinId, CancellationToken cancellationToken)
+    public async Task<bool> Delete(int pinId, CancellationToken cancellationToken)
     {
-        var pin = await _dbContext.Pin.FirstOrDefaultAsync(p => p.CommunityId == communityId && p.Id == pinId, cancellationToken);
+        var pin = await _dbContext.Pin.FirstOrDefaultAsync(p => p.Id == pinId, cancellationToken);
 
         if (pin == null)
         {

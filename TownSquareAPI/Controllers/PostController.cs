@@ -48,6 +48,7 @@ public class PostController : ControllerBase
     public async Task<IActionResult> Create([FromBody] PostRequestDTO request, CancellationToken cancellationToken)
     {
         Post post = _mapper.Map<Post>(request);
+        post.PostedAt = DateTime.UtcNow;
         Post createdPost = await _postService.Create(post, cancellationToken);
         PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(createdPost);
         return CreatedAtAction(nameof(GetById), new { id = postResponseDTO.Id }, postResponseDTO);

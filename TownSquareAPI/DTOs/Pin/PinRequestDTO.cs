@@ -8,4 +8,5 @@ public class PinRequestDTO
     public double YCord { get; set; }
     public int CommunityId { get; set; }
     public int Pintype { get; set; }
+    public string UserId { get; set; }
 }
