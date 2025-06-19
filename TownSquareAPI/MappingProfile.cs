@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TownSquareAPI.DTOs.ApplicationUser;
 using TownSquareAPI.DTOs.Community;
+using TownSquareAPI.DTOs.HelpPost;
 using TownSquareAPI.DTOs.Pin;
 using TownSquareAPI.DTOs.Post;
 using TownSquareAPI.Models;
@@ -30,6 +31,12 @@ public class MappingProfile : Profile
         CreateMap<PostRequestDTO, Post>();
 
         CreateMap<Post, PostResponseDTO>();
+
+        // HelpPost
+
+        CreateMap<HelpPostRequestDTO, HelpPost>();
+
+        CreateMap<HelpPost, HelpPostResponseDTO>();
 
         // User
 

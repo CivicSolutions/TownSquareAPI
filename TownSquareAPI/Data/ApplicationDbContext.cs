@@ -38,6 +38,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(h => h.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<HelpPost>()
+            .HasOne<Community>()
+            .WithMany()
+            .HasForeignKey(h => h.CommunityId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         // user table
         //modelBuilder.Entity<User>().ToTable("user");
 

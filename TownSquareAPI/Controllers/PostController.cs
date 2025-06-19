@@ -24,7 +24,7 @@ public class PostController : ControllerBase
     [HttpGet("GetAll")]
     public async Task<IActionResult> GetAll(string userId, CancellationToken cancellationToken)
     {
-        var posts = await _postService.GetAll(cancellationToken);
+        List<Post> posts = await _postService.GetAll(cancellationToken);
 
         List<PostResponseDTO> postResponseDTOs = _mapper.Map<List<PostResponseDTO>>(posts);
         foreach (var post in postResponseDTOs)
@@ -37,7 +37,7 @@ public class PostController : ControllerBase
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(int id, string userId, CancellationToken cancellationToken)
     {
-        var post = await _postService.GetById(id, cancellationToken);
+        Post? post = await _postService.GetById(id, cancellationToken);
         if (post == null)
         {
             return NotFound($"Post with ID {id} not found.");
@@ -59,18 +59,31 @@ public class PostController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(int postId, [FromBody] PostRequestDTO request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(int id, [FromBody] PostRequestDTO request, CancellationToken cancellationToken)
     {
         Post post = _mapper.Map<Post>(request);
-        Post? updatedPost = await _postService.Update(postId, post, cancellationToken);
+        Post? updatedPost = await _postService.Update(id, post, cancellationToken);
 
         if (updatedPost == null)
         {
-            return NotFound($"Post with ID {postId} not found.");
+            return NotFound($"Post with ID {id} not found.");
         }
 
         PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(updatedPost);
         return CreatedAtAction(nameof(GetById), new { id = postResponseDTO.Id }, postResponseDTO);
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    {
+        bool deleted = await _postService.Delete(id, cancellationToken);
+
+        if (!deleted)
+        {
+            return NotFound($"Post with ID {id} not found.");
+        }
+
+        return NoContent();
     }
 
     [HttpPost("Like")]
@@ -100,18 +113,5 @@ public class PostController : ControllerBase
         PostResponseDTO postResponseDTO = _mapper.Map<PostResponseDTO>(post);
         postResponseDTO.IsLikedByCurrentUser = await _postService.IsPostLikedByUser(postId, userId, cancellationToken);
         return Ok(postResponseDTO);
-    }
-
-    [HttpDelete]
-    public async Task<IActionResult> Delete(int postId, CancellationToken cancellationToken)
-    {
-        bool deleted = await _postService.Delete(postId, cancellationToken);
-
-        if (!deleted)
-        {
-            return NotFound($"Post with ID {postId} not found.");
-        }
-
-        return NoContent();
     }
 }
