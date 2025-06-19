@@ -37,7 +37,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // MongoDB connection string
 var mongoConnectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING")
-    ?? "mongodb://localhost:27017"; // fallback local connection
+    ?? throw new InvalidOperationException("Mongo Database connection string is not configured.");
 
 // Register IMongoClient as singleton
 builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
