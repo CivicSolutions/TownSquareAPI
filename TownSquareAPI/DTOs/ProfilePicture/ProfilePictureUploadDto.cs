@@ -4,9 +4,9 @@ namespace TownSquareAPI.DTOs.ProfilePicture;
 
 public class ProfilePictureUploadDto
 {
-    [FromForm(Name = "Picture")]
-    public IFormFile Picture { get; set; } = default!;
+    [FromForm(Name = "UserId")]
+    public string UserId { get; set; } = null!;
 
-    [FromForm]
-    public string UserId { get; set; } = default!;
+    [FromForm(Name = "Picture")]
+    public IFormFile Picture { get; set; } = null!;
 }
