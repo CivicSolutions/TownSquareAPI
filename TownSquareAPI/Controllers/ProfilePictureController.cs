@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 using TownSquareAPI.DTOs.ProfilePicture;
 using TownSquareAPI.Models;
 using TownSquareAPI.Services;
@@ -20,10 +21,20 @@ public class ProfilePictureController : ControllerBase
     }
 
     [HttpGet("Image")]
-    public IActionResult GetProfilePictureUrl(string userId)
+    public async Task<IActionResult> GetProfilePictureUrl([FromQuery] string userId, CancellationToken cancellationToken)
     {
-        var imageUrl = Url.Action(nameof(GetProfilePictureFile), "ProfilePicture", new { userId }, Request.Scheme);
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return BadRequest("UserId is required.");
+        }
 
+        var picture = await _profilePictureService.GetByUserIdAsync(userId, cancellationToken);
+        if (picture == null)
+        {
+            return NotFound("No picture found");
+        }
+
+        var imageUrl = Url.Action(nameof(GetProfilePictureFile), "ProfilePicture", new { userId }, Request.Scheme);
         return Ok(new { imageUrl });
     }
 
