@@ -24,15 +24,42 @@ public class ProfilePictureController : ControllerBase
     {
         var picture = await _profilePictureService.GetByUserIdAsync(userId, cancellationToken);
 
-        if (picture == null || picture.Picture == null || picture.Picture.Length == 0)
+        if (picture == null || string.IsNullOrWhiteSpace(picture.Picture))
         {
             return NotFound("Profile picture not found.");
         }
 
-        // You may determine the content type from metadata, or hardcode based on how you store it
-        string contentType = "image/jpeg"; // or "image/png", depending on your image format
+        string base64String = picture.Picture;
 
-        return File(picture.Picture, contentType);
+        // Optional: Remove data URL prefix if exists (like "data:image/png;base64,")
+        if (base64String.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+        {
+            var commaIndex = base64String.IndexOf(',');
+            if (commaIndex >= 0)
+            {
+                base64String = base64String[(commaIndex + 1)..];
+            }
+        }
+
+        byte[] imageBytes;
+        try
+        {
+            imageBytes = Convert.FromBase64String(base64String);
+        }
+        catch (FormatException)
+        {
+            return BadRequest("Picture data is not in valid Base64 format.");
+        }
+
+        // Optional: If you want to detect content type dynamically from the byte array, you can add logic here.
+        string contentType = "image/png"; // or set based on your actual image type
+
+        if (imageBytes.Length == 0)
+        {
+            return NotFound("Profile picture is empty.");
+        }
+
+        return File(imageBytes, contentType);
     }
 
 }

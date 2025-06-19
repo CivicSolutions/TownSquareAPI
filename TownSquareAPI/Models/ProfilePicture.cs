@@ -8,8 +8,7 @@ namespace TownSquareAPI.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId Id { get; set; }
-        public byte[] Picture { get; set; }
-        public int userId { get; set; }
-        public bool IsDeafult { get; set; }
+        public string Picture { get; set; }
+        public int UserId { get; set; }
     }
 }

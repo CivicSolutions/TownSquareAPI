@@ -24,7 +24,7 @@ public class ProfilePictureService
     public async Task<ProfilePicture> GetByUserIdAsync(int userId, CancellationToken cancellationToken)
     {
         return await _profilePictures
-            .Find(pic => pic.userId == userId)
+            .Find(pic => pic.UserId == userId)
             .FirstOrDefaultAsync(cancellationToken);
     }
 
@@ -38,7 +38,7 @@ public class ProfilePictureService
     // Update existing ProfilePicture by userId
     public async Task<ProfilePicture> UpdateAsync(int userId, ProfilePicture updatedProfilePicture, CancellationToken cancellationToken)
     {
-        var filter = Builders<ProfilePicture>.Filter.Eq(p => p.userId, userId);
+        var filter = Builders<ProfilePicture>.Filter.Eq(p => p.UserId, userId);
         var result = await _profilePictures.ReplaceOneAsync(filter, updatedProfilePicture, cancellationToken: cancellationToken);
 
         if (result.MatchedCount == 0)
@@ -50,7 +50,7 @@ public class ProfilePictureService
     // Delete ProfilePicture by userId
     public async Task<bool> DeleteAsync(int userId, CancellationToken cancellationToken)
     {
-        var result = await _profilePictures.DeleteOneAsync(p => p.userId == userId, cancellationToken);
+        var result = await _profilePictures.DeleteOneAsync(p => p.UserId == userId, cancellationToken);
         return result.DeletedCount > 0;
     }
 }
