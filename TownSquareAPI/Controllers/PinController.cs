@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TownSquareAPI.DTOs.Pin;
 using TownSquareAPI.Models;
@@ -8,6 +9,7 @@ namespace TownSquareAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class PinController : ControllerBase
 {
     private readonly PinService _pinService;
@@ -20,16 +22,16 @@ public class PinController : ControllerBase
     }
 
     [HttpGet("GetAll")]
-    public async Task<IActionResult> GetAll(int communityId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var pins = await _pinService.GetAll(communityId, cancellationToken);
+        var pins = await _pinService.GetAll(cancellationToken);
         return Ok(pins);
     }
 
     [HttpGet("GetById")]
-    public async Task<IActionResult> GetById(int communityId, int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
     {
-        var pin = await _pinService.GetById(communityId, id, cancellationToken);
+        var pin = await _pinService.GetById(id, cancellationToken);
         if (pin == null)
         {
             return NotFound($"Pin with ID {id} not found.");
@@ -41,16 +43,17 @@ public class PinController : ControllerBase
     public async Task<IActionResult> Create([FromBody] PinRequestDTO request, CancellationToken cancellationToken)
     {
         Pin pin = _mapper.Map<Pin>(request);
+        pin.PostedAt = DateTime.Now;
         Pin createdPin = await _pinService.Create(pin, cancellationToken);
         PinResponseDTO pinDto = _mapper.Map<PinResponseDTO>(createdPin);
         return CreatedAtAction(nameof(GetById), new { id = pinDto.Id }, pinDto);
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(int communityId, int pinId, [FromBody] PinRequestDTO request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(int pinId, [FromBody] PinRequestDTO request, CancellationToken cancellationToken)
     {
         Pin pin = _mapper.Map<Pin>(request);
-        Pin? updatedPin = await _pinService.Update(communityId, pinId, pin, cancellationToken);
+        Pin? updatedPin = await _pinService.Update(pinId, pin, cancellationToken);
 
         if (updatedPin == null)
         {
@@ -62,9 +65,9 @@ public class PinController : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<IActionResult> Delete(int communityId, int pinId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(int pinId, CancellationToken cancellationToken)
     {
-        bool deleted = await _pinService.Delete(communityId, pinId, cancellationToken);
+        bool deleted = await _pinService.Delete(pinId, cancellationToken);
 
         if (!deleted)
         {

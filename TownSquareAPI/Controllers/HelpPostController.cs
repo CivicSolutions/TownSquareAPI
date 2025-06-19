@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TownSquareAPI.Models;
 using TownSquareAPI.Services;
 
@@ -6,6 +7,7 @@ namespace TownSquareAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class HelpPostController : ControllerBase
 {
     private readonly HelpPostService _helpPostService;

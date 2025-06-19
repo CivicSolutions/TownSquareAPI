@@ -1,19 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TownSquareAPI.Models;
 
 namespace TownSquareAPI.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
-    public DbSet<User> User { get; set; }
+    //public DbSet<User> User { get; set; }
+    public DbSet<ApplicationUser> ApplicationUser { get; set; }
     public DbSet<Post> Post { get; set; }
     public DbSet<Community> Community { get; set; }
     public DbSet<HelpPost> HelpPost { get; set; }
     public DbSet<Pin> Pin { get; set; }
+    public DbSet<PostLike> PostLike { get; set; }
     public DbSet<UserCommunity> UserCommunity { get; set; }
     public DbSet<CommunityPost> CommunityPost { get; set; }
 
@@ -30,7 +33,7 @@ public class ApplicationDbContext : DbContext
             );
 
         modelBuilder.Entity<HelpPost>()
-            .HasOne<User>()
+            .HasOne<ApplicationUser>()
             .WithMany()
             .HasForeignKey(h => h.UserId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -48,7 +51,7 @@ public class ApplicationDbContext : DbContext
             );
 
         modelBuilder.Entity<Post>()
-            .HasOne<User>()
+            .HasOne<ApplicationUser>()
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -72,7 +75,7 @@ public class ApplicationDbContext : DbContext
             );
 
         modelBuilder.Entity<Pin>()
-            .HasOne<User>()
+            .HasOne<ApplicationUser>()
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -83,12 +86,27 @@ public class ApplicationDbContext : DbContext
             .HasForeignKey(p => p.CommunityId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        // PostLikes table
+        modelBuilder.Entity<PostLike>()
+            .HasKey(p => new { p.UserId, p.PostId });
+
+        modelBuilder.Entity<PostLike>()
+            .HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<PostLike>()
+            .HasOne<Post>()
+            .WithMany()
+            .HasForeignKey(p => p.PostId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         // user_community_membership table
         modelBuilder.Entity<UserCommunity>()
             .HasKey(ucr => new { ucr.UserId, ucr.CommunityId });
 
         modelBuilder.Entity<UserCommunity>()
-            .HasOne<User>()
+            .HasOne<ApplicationUser>()
             .WithMany()
             .HasForeignKey(ucr => ucr.UserId)
             .OnDelete(DeleteBehavior.Cascade);

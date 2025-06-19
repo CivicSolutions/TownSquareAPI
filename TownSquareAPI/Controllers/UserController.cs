@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TownSquareAPI.DTOs.User;
+using TownSquareAPI.DTOs.ApplicationUser;
 using TownSquareAPI.Models;
 using TownSquareAPI.Services;
 
@@ -8,115 +9,99 @@ namespace TownSquareAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
-    private readonly TokenService _tokenService;
     private readonly IMapper _mapper;
 
-    public UserController(UserService userService, TokenService tokenService, IMapper mapper)
+    public UserController(UserService userService, IMapper mapper)
     {
         _userService = userService;
-        _tokenService = tokenService;
         _mapper = mapper;
     }
 
-    [HttpPost("Register")]
-    public IActionResult Register([FromBody] User user)
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
     {
-        // email must be unique
-        var existingUser = _userService.GetUserByEmail(user.Email);
-        if (existingUser != null)
-        {
-            return BadRequest("Email already exists.");
-        }
-
-        // password must be hashed
-        user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-        _userService.CreateUser(user);
-        return CreatedAtAction(nameof(GetById), new { userId = user.Id }, user);
-    }
-
-    [HttpPost("Login")]
-    public IActionResult Login([FromBody] LoginRequest request)
-    {
-        // check if user with email exists
-        var user = _userService.GetUserByEmail(request.Email);
-        if (user == null)
-        {
-            return Unauthorized("Invalid credentials.");
-        }
-
-        // check if password is correct
-        var isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
-        if (!isPasswordValid)
-        {
-            return Unauthorized("Invalid credentials.");
-        }
-
-        // generate a token
-        var token = _tokenService.GenerateToken(user.Email);
-        return Ok(new { token });
-    }
-
-    [HttpPost("ValidateToken")]
-    public async Task<IActionResult> ValidateToken([FromBody] TokenRequest request)
-    {
-        // validate the token
-        string? email = await _tokenService.ValidateTokenAsync(request.Token);
-        if (email == null)
-        {
-            return Unauthorized("Invalid token.");
-        }
-        // get the user by email
-        var user = _userService.GetUserByEmail(email);
-        if (user == null)
-        {
-            return NotFound("User not found.");
-        }
-
-        // map the user to a UserResponseDTO
-        UserResponseDTO userResponseDTO = _mapper.Map<UserResponseDTO>(user);
-        return Ok(userResponseDTO);
-    }
-
-    [HttpGet("GetById/{userId}")]
-    public IActionResult GetById(int userId)
-    {
-        User? user = _userService.GetUserById(userId);
-        if (user == null)
-        {
-            return NotFound($"User with ID {userId} not found.");
-        }
-        return Ok(user);
-    }
-
-    [HttpGet("GetAllByCommunityId")]
-    public IActionResult GetAllByCommunity(int communityId)
-    {
-        List<User> users = _userService.GetAllUsersByCommunityId(communityId);
-
-        if (users == null || users.Count == 0)
-        {
-            return NotFound($"No users found in community with ID {communityId}.");
-        }
-
-        // use AutoMapper to map the list of users to a list of UserResponseDTO
+        List<ApplicationUser> users = await _userService.GetAllUsersAsync();
         List<UserResponseDTO> userResponseDTOs = _mapper.Map<List<UserResponseDTO>>(users);
         return Ok(userResponseDTOs);
     }
 
-    [HttpPut("Update/{userId}")]
-    public IActionResult Update(int userId, [FromBody] UserRequestDTO updateUserRequest)
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> GetById(string userId)
     {
-        _userService.UpdateUser(userId, updateUserRequest.Name, updateUserRequest.Description);
-        return Ok("Description updated.");
+        ApplicationUser? user = await _userService.GetUserByIdAsync(userId);
+        if (user == null)
+        {
+            return NotFound($"No user found with ID {userId}.");
+        }
+        UserResponseDTO userResponseDTO = _mapper.Map<UserResponseDTO>(user);
+        return Ok(userResponseDTO);
     }
 
-    [HttpDelete("DeleteUser/{userId}")]
-    public IActionResult DeleteUser(int userId)
+    [HttpGet("GetByFirstAndLastName")]
+    public async Task<IActionResult> GetByFirstAndLastName([FromQuery] string? firstName, [FromQuery] string? lastName)
     {
-        _userService.DeleteUserById(userId);
-        return Ok("User deleted.");
+        if (string.IsNullOrWhiteSpace(firstName) && string.IsNullOrWhiteSpace(lastName))
+        {
+            return BadRequest("At least one of firstName or lastName must be provided.");
+        }
+
+        var users = await _userService.GetUserByFirstAndLastNameAsync(firstName, lastName);
+        if (users == null || users.Count == 0)
+        {
+            return NotFound("No users found with the given criteria.");
+        }
+        var userResponseDTOs = _mapper.Map<List<UserResponseDTO>>(users);
+        return Ok(userResponseDTOs);
+    }
+
+
+
+    [HttpGet("GetByEmail")]
+    public async Task<IActionResult> GetByEmail(string email)
+    {
+        ApplicationUser? user = await _userService.GetUserByEmailAsync(email);
+        if (user == null)
+        {
+            return NotFound($"No user found with email {email}.");
+        }
+        UserResponseDTO userResponseDTO = _mapper.Map<UserResponseDTO>(user);
+        return Ok(userResponseDTO);
+    }
+
+    [HttpPut("{userId}")]
+    public async Task<IActionResult> Update(string userId, [FromBody] UserRequestDTO userRequestDTO)
+    {
+        ApplicationUser? user = await _userService.GetUserByIdAsync(userId);
+        if (user == null)
+        {
+            return NotFound($"No user found with ID {userId}.");
+        }
+        _mapper.Map(userRequestDTO, user);
+        var result = await _userService.UpdateUserAsync(user);
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        return NoContent();
+    }
+
+    [HttpDelete("{userId}")]
+    public async Task<IActionResult> Delete(string userId)
+    {
+        ApplicationUser? user = await _userService.GetUserByIdAsync(userId);
+        if (user == null)
+        {
+            return NotFound($"No user found with ID {userId}.");
+        }
+        var result = await _userService.DeleteUserAsync(user);
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        return NoContent();
     }
 }

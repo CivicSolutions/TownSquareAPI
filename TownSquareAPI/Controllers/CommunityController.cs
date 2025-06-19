@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TownSquareAPI.DTOs.Community;
 using TownSquareAPI.Models;
@@ -8,6 +9,7 @@ namespace TownSquareAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class CommunityController : ControllerBase
 {
     private readonly CommunityService _communityService;
@@ -19,11 +21,11 @@ public class CommunityController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("GetAll")]
+    [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
         List<Community> communities = await _communityService.GetAll(cancellationToken);
-        List<CommunityResponseDTO> communityDTOs = _mapper.Map<List<CommunityResponseDTO>>(communities); // kind of useless when the mapping is 1:1 but it's good practice
+        List<CommunityResponseDTO> communityDTOs = _mapper.Map<List<CommunityResponseDTO>>(communities); // kind of useless when the mapping is 1:1 but it's good practice (edit: removed isLicensed so it now makes sense)
         return Ok(communityDTOs);
     }
 
@@ -97,10 +99,40 @@ public class CommunityController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("RequestMembership")]
-    public async Task<IActionResult> RequestMembership(int userId, int communityId, CancellationToken cancellationToken)
+    [HttpPost("RequestMembership")]
+    public async Task<IActionResult> RequestMembership([FromBody] UserCommunityRequestDTO request, CancellationToken cancellationToken)
     {
-        await _communityService.CreateMembershipRequest(userId, communityId, cancellationToken);
-        return Ok("Membership request submitted.");
+        if (string.IsNullOrWhiteSpace(request.UserId) || request.CommunityId <= 0)
+        {
+            return BadRequest("User ID and Community ID are required.");
+        }
+
+        Community? community = await _communityService.GetById(request.CommunityId, cancellationToken);
+        if (community == null)
+        {
+            return NotFound($"Community with ID {request.CommunityId} not found.");
+        }
+
+        bool requestExists = await _communityService.MembershipRequestExists(request.UserId, request.CommunityId, cancellationToken);
+        if (requestExists)
+        {
+            return BadRequest("Membership request already exists for this user and community.");
+        }
+
+        UserCommunity userCommunity = _mapper.Map<UserCommunity>(request);
+        userCommunity.Status = RequestStatus.Pending;
+        await _communityService.CreateMembershipRequest(userCommunity, cancellationToken);
+        return Ok("Membership request created successfully.");
+    }
+
+    [HttpGet("MembershipRequests/{communityId}")]
+    public async Task<IActionResult> GetMembershipRequests(int communityId, CancellationToken cancellationToken)
+    {
+        List<UserCommunity> requests = await _communityService.GetMembershipRequests(communityId, cancellationToken);
+        if (requests == null || requests.Count == 0)
+        {
+            return NotFound($"No membership requests found for community with ID {communityId}.");
+        }
+        return Ok(requests);
     }
 }
