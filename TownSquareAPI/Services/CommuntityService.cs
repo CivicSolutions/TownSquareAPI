@@ -36,17 +36,6 @@ public class CommunityService
         return community;
     }
 
-    public async Task CreateMembershipRequest(string userId, int communityId, CancellationToken cancellationToken)
-    {
-        var request = new UserCommunity
-        {
-            UserId = userId,
-            CommunityId = communityId
-        };
-        _dbContext.Add(request);
-        await _dbContext.SaveChangesAsync(cancellationToken);
-    }
-
     public async Task<Community?> Update(int communityId, Community community, CancellationToken cancellationToken)
     {
         Community? communityToUpdate = await _dbContext.Community.FirstOrDefaultAsync(c => c.Id == communityId, cancellationToken);
@@ -74,5 +63,16 @@ public class CommunityService
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return true;
+    }
+
+    public async Task CreateMembershipRequest(UserCommunity userCommunity, CancellationToken cancellationToken)
+    {
+        _dbContext.UserCommunity.Add(userCommunity);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<bool> MembershipRequestExists(string userId, int communityId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.UserCommunity.AnyAsync(uc => uc.UserId == userId && uc.CommunityId == communityId, cancellationToken);
     }
 }

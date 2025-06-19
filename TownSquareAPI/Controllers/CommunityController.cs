@@ -99,10 +99,29 @@ public class CommunityController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("RequestMembership")]
-    public async Task<IActionResult> RequestMembership(string userId, int communityId, CancellationToken cancellationToken)
+    [HttpPost("RequestMembership")]
+    public async Task<IActionResult> RequestMembership([FromBody] UserCommunityRequestDTO request, CancellationToken cancellationToken)
     {
-        await _communityService.CreateMembershipRequest(userId, communityId, cancellationToken);
-        return Ok("Membership request submitted.");
+        if (string.IsNullOrWhiteSpace(request.UserId) || request.CommunityId <= 0)
+        {
+            return BadRequest("User ID and Community ID are required.");
+        }
+
+        Community? community = await _communityService.GetById(request.CommunityId, cancellationToken);
+        if (community == null)
+        {
+            return NotFound($"Community with ID {request.CommunityId} not found.");
+        }
+
+        bool requestExists = await _communityService.MembershipRequestExists(request.UserId, request.CommunityId, cancellationToken);
+        if (requestExists)
+        {
+            return BadRequest("Membership request already exists for this user and community.");
+        }
+
+        UserCommunity userCommunity = _mapper.Map<UserCommunity>(request);
+        userCommunity.Status = RequestStatus.Pending;
+        await _communityService.CreateMembershipRequest(userCommunity, cancellationToken);
+        return Ok("Membership request created successfully.");
     }
 }
