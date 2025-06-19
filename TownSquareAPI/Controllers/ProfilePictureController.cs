@@ -92,5 +92,28 @@ public class ProfilePictureController : ControllerBase
         return null;
     }
 
+    [HttpPost("Upload")]
+    public async Task<IActionResult> UploadProfilePicture([FromForm] ProfilePictureUploadDto dto, CancellationToken cancellationToken)
+    {
+        if (dto.Picture == null || dto.Picture.Length == 0)
+            return BadRequest("No file uploaded.");
+
+        using var memoryStream = new MemoryStream();
+        await dto.Picture.CopyToAsync(memoryStream, cancellationToken);
+        byte[] imageBytes = memoryStream.ToArray();
+
+        string base64Image = Convert.ToBase64String(imageBytes);
+
+        var profilePicture = new ProfilePicture
+        {
+            UserId = dto.UserId,
+            Picture = base64Image
+        };
+
+        await _profilePictureService.CreateOrReplaceAsync(profilePicture, cancellationToken);
+
+        return Ok("Profile picture uploaded successfully.");
+    }
+
 
 }
