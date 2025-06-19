@@ -1,7 +1,12 @@
-﻿namespace TownSquareAPI.DTOs.ProfilePicture;
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace TownSquareAPI.DTOs.ProfilePicture;
 
 public class ProfilePictureUploadDto
 {
-    public string UserId { get; set; }
-    public IFormFile File { get; set; } = default!;
+    [FromForm(Name = "Picture")]
+    public IFormFile Picture { get; set; } = default!;
+
+    [FromForm]
+    public string UserId { get; set; } = default!;
 }
