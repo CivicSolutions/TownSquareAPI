@@ -322,8 +322,10 @@ DELETE /api/User/UpdateBio/{userId}
 **TownSquaresAPI** is a REST-API for a mobile application called [TownSquare](https://github.com/CivicSolutions/TownSquare), developed using `.NET MAUI`, currently optimized primarily for Android devices. This project was created as part of a school assignment and is still in the development phase. While significant progress has been made, several key features are still under development.
 ## Authors
 
-- [Sergio Soares](https://www.github.com/Sergio-404)
+![#1 Contributor](https://imgur.com/e1ttA6A.png)
+
 - [Dominik Meister](https://github.com/MinenMaster)
+- [Sergio Soares](https://www.github.com/Sergio-404)
 - [Luka Ljubisavljevic](https://www.github.com/Lurx381)
 - [Kai Parkinson](https://www.github.com/Kai1732)
 ## Support
