@@ -124,4 +124,15 @@ public class CommunityController : ControllerBase
         await _communityService.CreateMembershipRequest(userCommunity, cancellationToken);
         return Ok("Membership request created successfully.");
     }
+
+    [HttpGet("MembershipRequests/{communityId}")]
+    public async Task<IActionResult> GetMembershipRequests(int communityId, CancellationToken cancellationToken)
+    {
+        List<UserCommunity> requests = await _communityService.GetMembershipRequests(communityId, cancellationToken);
+        if (requests == null || requests.Count == 0)
+        {
+            return NotFound($"No membership requests found for community with ID {communityId}.");
+        }
+        return Ok(requests);
+    }
 }
