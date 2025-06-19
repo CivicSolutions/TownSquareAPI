@@ -11,7 +11,7 @@ public class TokenService
     private static readonly string Secret = Environment.GetEnvironmentVariable("JWT_SECRET") ??
         throw new InvalidOperationException("JWT secret is not configured.");
 
-    public string GenerateToken(string email)
+    public static string GenerateToken(string email)
     {
         byte[] key = Encoding.UTF8.GetBytes(Secret);
         SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
@@ -28,7 +28,7 @@ public class TokenService
         return handler.CreateToken(descriptor);
     }
 
-    public async Task<ClaimsPrincipal?> GetPrincipalAsync(string token)
+    public static async Task<ClaimsPrincipal?> GetPrincipalAsync(string token)
     {
         try
         {
@@ -56,24 +56,25 @@ public class TokenService
         }
     }
 
-    public async Task<string?> ValidateTokenAsync(string token)
+    public static async Task<string?> ValidateTokenAsync(string token)
     {
+        string? username = null;
+        ClaimsPrincipal? principal = await GetPrincipalAsync(token);
 
-
-        // return userId if valid
-        var principal = await GetPrincipalAsync(token);
         if (principal == null)
             return null;
-        var emailClaim = principal.FindFirst(ClaimTypes.Name);
-        if (emailClaim == null)
-            return null;
-        var email = emailClaim.Value;
-        // check if user with email exists
-        // var user = _userService.GetUserByEmail(email);
-        // if (user == null)
-        //     return null;
-        // return user.Id.ToString();
-        return email;
 
+        try
+        {
+            var identity = principal.Identity as ClaimsIdentity;
+            var usernameClaim = identity?.FindFirst(ClaimTypes.Name);
+            username = usernameClaim?.Value;
+        }
+        catch (NullReferenceException)
+        {
+            return null;
+        }
+
+        return username;
     }
 }
