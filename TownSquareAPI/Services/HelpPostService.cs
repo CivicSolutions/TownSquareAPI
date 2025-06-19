@@ -1,4 +1,5 @@
-﻿using TownSquareAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using TownSquareAPI.Data;
 using TownSquareAPI.Models;
 
 namespace TownSquareAPI.Services;
@@ -12,14 +13,48 @@ public class HelpPostService
         _dbContext = dbContext;
     }
 
-    public List<HelpPost> GetHelpPosts()
+    public async Task<List<HelpPost>> GetAll(CancellationToken cancellationToken)
     {
-        return _dbContext.HelpPost.ToList();
+        return await _dbContext.HelpPost.ToListAsync(cancellationToken);
     }
 
-    public void AddHelpPost(HelpPost helpPost)
+    public async Task<HelpPost?> GetById(int id, CancellationToken cancellationToken)
+    {
+        return await _dbContext.HelpPost.FirstOrDefaultAsync(h => h.Id == id, cancellationToken);
+    }
+
+    public async Task<HelpPost> Create(HelpPost helpPost, CancellationToken cancellationToken)
     {
         _dbContext.HelpPost.Add(helpPost);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return helpPost;
+    }
+
+    public async Task<HelpPost?> Update(int id, HelpPost helpPost, CancellationToken cancellationToken)
+    {
+        HelpPost? helpPostToUpdate = await _dbContext.HelpPost.FirstOrDefaultAsync(h => h.Id == id, cancellationToken);
+
+        if (helpPostToUpdate == null)
+        {
+            return null;
+        }
+
+        _dbContext.HelpPost.Update(helpPost);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return helpPost;
+    }
+
+    public async Task<bool> Delete(int id, CancellationToken cancellationToken)
+    {
+        HelpPost? helpPostToDelete = await _dbContext.HelpPost.FirstOrDefaultAsync(h => h.Id == id, cancellationToken);
+
+        if (helpPostToDelete == null)
+        {
+            return false;
+        }
+
+        _dbContext.HelpPost.Remove(helpPostToDelete);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return true;
     }
 }

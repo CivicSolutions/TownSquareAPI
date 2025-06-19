@@ -295,7 +295,10 @@ namespace TownSquareAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
+                    b.Property<int>("CommunityId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -318,6 +321,8 @@ namespace TownSquareAPI.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CommunityId");
 
                     b.HasIndex("UserId");
 
@@ -510,6 +515,12 @@ namespace TownSquareAPI.Migrations
 
             modelBuilder.Entity("TownSquareAPI.Models.HelpPost", b =>
                 {
+                    b.HasOne("TownSquareAPI.Models.Community", null)
+                        .WithMany()
+                        .HasForeignKey("CommunityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TownSquareAPI.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
