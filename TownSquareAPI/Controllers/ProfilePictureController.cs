@@ -115,5 +115,17 @@ public class ProfilePictureController : ControllerBase
         return Ok("Profile picture uploaded successfully.");
     }
 
+    [HttpDelete("Delete")]
+    public async Task<IActionResult> DeleteProfilePicture([FromQuery] string userId, CancellationToken cancellationToken)
+    {
+        var deleted = await _profilePictureService.DeleteAsync(userId, cancellationToken);
+
+        if (!deleted)
+        {
+            return NotFound($"No profile picture found for userId: {userId}"); // HTTP 404 No content deleted
+        }
+
+        return NoContent(); // HTTP 204 No Content
+    }
 
 }
