@@ -20,7 +20,16 @@ public class ProfilePictureController : ControllerBase
     }
 
     [HttpGet("Image")]
-    public async Task<IActionResult> GetProfilePictureByUserId(int userId, CancellationToken cancellationToken)
+    public IActionResult GetProfilePictureUrl(int userId)
+    {
+        var imageUrl = Url.Action(nameof(GetProfilePictureFile), "ProfilePicture", new { userId }, Request.Scheme);
+
+        return Ok(new { imageUrl });
+    }
+
+    [HttpGet("ImageFile")]
+    [AllowAnonymous] // If you want it public; keep [Authorize] if not
+    public async Task<IActionResult> GetProfilePictureFile(int userId, CancellationToken cancellationToken)
     {
         var picture = await _profilePictureService.GetByUserIdAsync(userId, cancellationToken);
 
@@ -31,7 +40,7 @@ public class ProfilePictureController : ControllerBase
 
         string base64String = picture.Picture;
 
-        // Optional: Remove data URL prefix if exists (like "data:image/png;base64,")
+        // Remove prefix like "data:image/png;base64,"
         if (base64String.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
         {
             var commaIndex = base64String.IndexOf(',');
@@ -51,15 +60,37 @@ public class ProfilePictureController : ControllerBase
             return BadRequest("Picture data is not in valid Base64 format.");
         }
 
-        // Optional: If you want to detect content type dynamically from the byte array, you can add logic here.
-        string contentType = "image/png"; // or set based on your actual image type
-
         if (imageBytes.Length == 0)
         {
             return NotFound("Profile picture is empty.");
         }
 
+        string? contentType = GetImageContentType(imageBytes);
+        if (contentType == null)
+        {
+            return BadRequest("Unsupported image format.");
+        }
+
         return File(imageBytes, contentType);
     }
+
+    private static string? GetImageContentType(byte[] imageData)
+    {
+        if (imageData.Length >= 8 &&
+            imageData[0] == 0x89 && imageData[1] == 0x50 &&
+            imageData[2] == 0x4E && imageData[3] == 0x47)
+        {
+            return "image/png";
+        }
+
+        if (imageData.Length >= 3 &&
+            imageData[0] == 0xFF && imageData[1] == 0xD8 && imageData[2] == 0xFF)
+        {
+            return "image/jpeg";
+        }
+
+        return null;
+    }
+
 
 }
