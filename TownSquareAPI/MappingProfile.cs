@@ -17,6 +17,8 @@ public class MappingProfile : Profile
 
         CreateMap<Community, CommunityResponseDTO>();
 
+        CreateMap<UserCommunityRequestDTO, UserCommunity>();
+
         // Pin
 
         CreateMap<PinRequestDTO, Pin>();
