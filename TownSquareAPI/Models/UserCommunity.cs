@@ -11,6 +11,5 @@ public enum RequestStatus
 {
     Pending,
     Accepted,
-    Declined,
-    Expired
+    Declined
 }
