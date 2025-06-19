@@ -24,7 +24,7 @@ public class ProfilePictureService
     public async Task<ProfilePicture> GetByUserIdAsync(int userId, CancellationToken cancellationToken)
     {
         return await _profilePictures
-            .Find(pic => pic.UserId == userId)
+            .Find(pic => pic.userId == userId)
             .FirstOrDefaultAsync(cancellationToken);
     }
 
@@ -35,22 +35,22 @@ public class ProfilePictureService
         return profilePicture;
     }
 
-    // Update existing ProfilePicture by Id
-    public async Task<ProfilePicture> UpdateAsync(int id, ProfilePicture updatedProfilePicture, CancellationToken cancellationToken)
+    // Update existing ProfilePicture by userId
+    public async Task<ProfilePicture> UpdateAsync(int userId, ProfilePicture updatedProfilePicture, CancellationToken cancellationToken)
     {
-        var filter = Builders<ProfilePicture>.Filter.Eq(p => p.Id, id);
+        var filter = Builders<ProfilePicture>.Filter.Eq(p => p.userId, userId);
         var result = await _profilePictures.ReplaceOneAsync(filter, updatedProfilePicture, cancellationToken: cancellationToken);
 
         if (result.MatchedCount == 0)
-            return null; // no document found with this id
+            return null; // no document found with this userId
 
         return updatedProfilePicture;
     }
 
-    // Delete ProfilePicture by Id
-    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+    // Delete ProfilePicture by userId
+    public async Task<bool> DeleteAsync(int userId, CancellationToken cancellationToken)
     {
-        var result = await _profilePictures.DeleteOneAsync(p => p.Id == id, cancellationToken);
+        var result = await _profilePictures.DeleteOneAsync(p => p.userId == userId, cancellationToken);
         return result.DeletedCount > 0;
     }
 }
