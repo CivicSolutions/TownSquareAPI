@@ -20,7 +20,7 @@ public class ProfilePictureController : ControllerBase
     }
 
     [HttpGet("Image")]
-    public IActionResult GetProfilePictureUrl(int userId)
+    public IActionResult GetProfilePictureUrl(string userId)
     {
         var imageUrl = Url.Action(nameof(GetProfilePictureFile), "ProfilePicture", new { userId }, Request.Scheme);
 
@@ -29,7 +29,7 @@ public class ProfilePictureController : ControllerBase
 
     [HttpGet("ImageFile")]
     [AllowAnonymous] // If you want it public; keep [Authorize] if not
-    public async Task<IActionResult> GetProfilePictureFile(int userId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProfilePictureFile(string userId, CancellationToken cancellationToken)
     {
         var picture = await _profilePictureService.GetByUserIdAsync(userId, cancellationToken);
 
