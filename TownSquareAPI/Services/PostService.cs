@@ -30,9 +30,9 @@ public class PostService
         return post;
     }
 
-    public async Task<Post?> Update(int postId, Post post, CancellationToken cancellationToken)
+    public async Task<Post?> Update(int id, Post post, CancellationToken cancellationToken)
     {
-        Post? postToUpdate = await _dbContext.Post.FirstOrDefaultAsync(p => p.Id == postId, cancellationToken);
+        Post? postToUpdate = await _dbContext.Post.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
 
         if (postToUpdate == null)
         {
@@ -42,6 +42,20 @@ public class PostService
         _dbContext.Post.Update(post);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return post;
+    }
+
+    public async Task<bool> Delete(int id, CancellationToken cancellationToken)
+    {
+        var post = await _dbContext.Post.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+
+        if (post == null)
+        {
+            return false;
+        }
+
+        _dbContext.Post.Remove(post);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return true;
     }
 
     public async Task<Post?> Like(int postId, string userId, CancellationToken cancellationToken)
@@ -89,20 +103,6 @@ public class PostService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
         return post;
-    }
-
-    public async Task<bool> Delete(int postId, CancellationToken cancellationToken)
-    {
-        var post = await _dbContext.Post.FirstOrDefaultAsync(p => p.Id == postId, cancellationToken);
-
-        if (post == null)
-        {
-            return false;
-        }
-
-        _dbContext.Post.Remove(post);
-        await _dbContext.SaveChangesAsync(cancellationToken);
-        return true;
     }
 
     public async Task<bool> IsPostLikedByUser(int postId, string userId, CancellationToken cancellationToken)
