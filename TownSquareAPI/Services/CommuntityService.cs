@@ -75,4 +75,11 @@ public class CommunityService
     {
         return await _dbContext.UserCommunity.AnyAsync(uc => uc.UserId == userId && uc.CommunityId == communityId, cancellationToken);
     }
+
+    public async Task<List<UserCommunity>> GetMembershipRequests(int communityId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.UserCommunity
+            .Where(uc => uc.CommunityId == communityId && uc.Status == RequestStatus.Pending)
+            .ToListAsync(cancellationToken);
+    }
 }
