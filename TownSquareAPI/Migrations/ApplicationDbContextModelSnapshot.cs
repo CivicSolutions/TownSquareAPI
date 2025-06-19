@@ -392,6 +392,10 @@ namespace TownSquareAPI.Migrations
                     b.Property<DateTime>("PostedAt")
                         .HasColumnType("timestamp");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
