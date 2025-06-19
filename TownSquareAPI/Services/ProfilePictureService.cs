@@ -29,22 +29,14 @@ public class ProfilePictureService
     }
 
     // Create a new ProfilePicture
-    public async Task<ProfilePicture> CreateAsync(ProfilePicture profilePicture, CancellationToken cancellationToken)
+    public async Task<ProfilePicture> CreateOrReplaceAsync(ProfilePicture profilePicture, CancellationToken cancellationToken)
     {
-        await _profilePictures.InsertOneAsync(profilePicture, null, cancellationToken);
+        var filter = Builders<ProfilePicture>.Filter.Eq(p => p.UserId, profilePicture.UserId);
+        var options = new ReplaceOptions { IsUpsert = true };
+
+        await _profilePictures.ReplaceOneAsync(filter, profilePicture, options, cancellationToken);
+
         return profilePicture;
-    }
-
-    // Update existing ProfilePicture by userId
-    public async Task<ProfilePicture> UpdateAsync(string userId, ProfilePicture updatedProfilePicture, CancellationToken cancellationToken)
-    {
-        var filter = Builders<ProfilePicture>.Filter.Eq(p => p.UserId, userId);
-        var result = await _profilePictures.ReplaceOneAsync(filter, updatedProfilePicture, cancellationToken: cancellationToken);
-
-        if (result.MatchedCount == 0)
-            return null; // no document found with this userId
-
-        return updatedProfilePicture;
     }
 
     // Delete ProfilePicture by userId
