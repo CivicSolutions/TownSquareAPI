@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,6 +32,17 @@ public class ProfilePictureService
     // Create a new ProfilePicture
     public async Task<ProfilePicture> CreateOrReplaceAsync(ProfilePicture profilePicture, CancellationToken cancellationToken)
     {
+        var existing = await _profilePictures.Find(p => p.UserId == profilePicture.UserId).FirstOrDefaultAsync(cancellationToken);
+
+        if (existing != null)
+        {
+            profilePicture.Id = existing.Id;
+        }
+        else
+        {
+            profilePicture.Id = ObjectId.GenerateNewId(); // or leave it if already generated
+        }
+
         var filter = Builders<ProfilePicture>.Filter.Eq(p => p.UserId, profilePicture.UserId);
         var options = new ReplaceOptions { IsUpsert = true };
 
